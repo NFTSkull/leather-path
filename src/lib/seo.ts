@@ -110,12 +110,14 @@ export function generateBreadcrumbJsonLd(items: Array<{
  * Genera JSON-LD para la organización
  */
 export function generateOrganizationJsonLd() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://leather-path.vercel.app';
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Leather Path',
-    url: 'https://leatherpath.mx',
-    logo: 'https://leatherpath.mx/logo.png',
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
     description: 'Tienda premium de calzado y accesorios de cuero con estética western elegante.',
     address: {
       '@type': 'PostalAddress',

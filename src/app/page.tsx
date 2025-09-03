@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import Link from 'next/link';
 import { ArrowRight, Star, Truck, Shield, Clock } from 'lucide-react';
 
@@ -7,35 +8,40 @@ const collections = [
   {
     name: 'Piel Exótica',
     description: 'Lujo y exclusividad en cada pieza',
-    image: 'https://via.placeholder.com/400x300/0B0B0C/FFFFFF?text=Piel+Exotica',
+    bgColor: '0B0B0C',
+    textColor: 'FFFFFF',
     href: '/tienda?collection=piel-exotica',
     badge: 'Exclusivo',
   },
   {
     name: 'Bota Alta',
     description: 'Elegancia y sofisticación',
-    image: 'https://via.placeholder.com/400x300/7A5C3E/FFFFFF?text=Bota+Alta',
+    bgColor: '7A5C3E',
+    textColor: 'FFFFFF',
     href: '/tienda?collection=bota-alta',
     badge: 'Premium',
   },
   {
     name: 'Botines',
     description: 'Comodidad y estilo',
-    image: 'https://via.placeholder.com/400x300/D0B08C/000000?text=Botines',
+    bgColor: 'D0B08C',
+    textColor: '000000',
     href: '/tienda?collection=botines',
     badge: 'Casual',
   },
   {
     name: 'Casual',
     description: 'Estilo relajado y moderno',
-    image: 'https://via.placeholder.com/400x300/3E2C21/FFFFFF?text=Casual',
+    bgColor: '3E2C21',
+    textColor: 'FFFFFF',
     href: '/tienda?collection=casual',
     badge: 'Moderno',
   },
   {
     name: 'Rodeo Fashion',
     description: 'Tradición western contemporánea',
-    image: 'https://via.placeholder.com/400x300/D4AF37/000000?text=Rodeo+Fashion',
+    bgColor: 'D4AF37',
+    textColor: '000000',
     href: '/tienda?collection=rodeo-fashion',
     badge: 'Western',
   },
@@ -46,7 +52,8 @@ const featuredProducts = [
     id: '1',
     title: 'Bota Western Becerro',
     price: 250000,
-    image: 'https://via.placeholder.com/300x300/7A5C3E/FFFFFF?text=Bota+Western',
+    bgColor: '7A5C3E',
+    textColor: 'FFFFFF',
     collection: 'Línea Normal',
     href: '/producto/bota-western-becerro',
   },
@@ -54,7 +61,8 @@ const featuredProducts = [
     id: '2',
     title: 'Bota Alta Avestruz',
     price: 450000,
-    image: 'https://via.placeholder.com/300x300/0B0B0C/FFFFFF?text=Bota+Alta+Avestruz',
+    bgColor: '0B0B0C',
+    textColor: 'FFFFFF',
     collection: 'Piel Exótica',
     href: '/producto/bota-alta-avestruz',
   },
@@ -62,7 +70,8 @@ const featuredProducts = [
     id: '3',
     title: 'Botín Casual',
     price: 180000,
-    image: 'https://via.placeholder.com/300x300/D0B08C/000000?text=Botin+Casual',
+    bgColor: 'D0B08C',
+    textColor: '000000',
     collection: 'Casual',
     href: '/producto/botin-casual',
   },
@@ -70,7 +79,8 @@ const featuredProducts = [
     id: '4',
     title: 'Cinto Becerro',
     price: 45000,
-    image: 'https://via.placeholder.com/300x300/D0B08C/000000?text=Cinto+Becerro',
+    bgColor: 'D0B08C',
+    textColor: '000000',
     collection: 'Línea Normal',
     href: '/producto/cinto-becerro',
   },
@@ -134,9 +144,12 @@ export default function HomePage() {
             </div>
             <div className="relative">
               <div className="aspect-square bg-saddle rounded-2xl overflow-hidden">
-                <img
-                  src="https://via.placeholder.com/600x600/7A5C3E/FFFFFF?text=Leather+Path+Hero"
-                  alt="Leather Path - Calzado Premium"
+                <PlaceholderImage
+                  text="Leather Path Hero"
+                  width={600}
+                  height={600}
+                  bgColor="7A5C3E"
+                  textColor="FFFFFF"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -166,9 +179,12 @@ export default function HomePage() {
               >
                 <div className="relative overflow-hidden rounded-2xl shadow-leather hover:shadow-leather-lg transition-shadow">
                   <div className="aspect-[4/3] bg-saddle">
-                    <img
-                      src={collection.image}
-                      alt={collection.name}
+                    <PlaceholderImage
+                      text={collection.name}
+                      width={400}
+                      height={300}
+                      bgColor={collection.bgColor}
+                      textColor={collection.textColor}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
@@ -212,9 +228,12 @@ export default function HomePage() {
                 className="group block bg-white rounded-2xl shadow-leather hover:shadow-leather-lg transition-shadow overflow-hidden"
               >
                 <div className="aspect-square bg-saddle overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.title}
+                  <PlaceholderImage
+                    text={product.title}
+                    width={300}
+                    height={300}
+                    bgColor={product.bgColor}
+                    textColor={product.textColor}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>

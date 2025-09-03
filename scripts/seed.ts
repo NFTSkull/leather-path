@@ -2,6 +2,18 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Función para generar slug a partir del título
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
 async function main() {
   console.log('🌱 Iniciando seed de datos...');
 
@@ -322,7 +334,10 @@ async function main() {
     const { variants, images, categoryIds, collectionIds, ...producto } = productoData;
     
     const product = await prisma.product.create({
-      data: producto,
+      data: {
+        ...producto,
+        slug: generateSlug(producto.title),
+      },
     });
 
     // Crear variantes

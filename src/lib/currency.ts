@@ -31,3 +31,4 @@ export function pesosToCents(pesos: number): number {
 export function centsToPesos(cents: number): number {
   return cents / 100;
 }
+

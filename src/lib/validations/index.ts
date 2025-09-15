@@ -88,3 +88,4 @@ export type ImageFormData = z.infer<typeof imageSchema>;
 export type CartItem = z.infer<typeof cartItemSchema>;
 export type CheckoutData = z.infer<typeof checkoutSchema>;
 export type ProductFilters = z.infer<typeof productFiltersSchema>;
+

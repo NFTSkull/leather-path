@@ -68,9 +68,12 @@ export const useCartStore = create<CartStore>()(
       },
       
       getSubtotal: () => {
-        // Esta función necesitará los precios de las variantes
-        // Se implementará cuando tengamos acceso a los datos de productos
-        return 0;
+        // Por ahora retornamos un cálculo básico
+        // En producción esto debería obtener los precios reales de las variantes
+        return get().items.reduce((total, item) => {
+          // Precio base de sandalias mujer: $2,650.00 MXN (265000 centavos)
+          return total + (item.quantity * 265000);
+        }, 0);
       },
     }),
     {
@@ -78,3 +81,4 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+

@@ -72,6 +72,14 @@ async function main() {
     },
   });
 
+  const sandalias = await prisma.category.create({
+    data: {
+      slug: 'sandalias',
+      name: 'Sandalias',
+      parentId: calzado.id,
+    },
+  });
+
   // Crear subcategorías de accesorios
   const cintos = await prisma.category.create({
     data: {
@@ -138,6 +146,13 @@ async function main() {
     data: {
       slug: 'rodeo-fashion',
       name: 'Rodeo Fashion',
+    },
+  });
+
+  const ladies = await prisma.collection.create({
+    data: {
+      slug: 'ladies',
+      name: 'Ladies',
     },
   });
 
@@ -325,6 +340,102 @@ async function main() {
       ],
       images: [
         { url: 'https://via.placeholder.com/600x400/D0B08C/000000?text=Cinto+Mujer', alt: 'Cinto Mujer - Vista completa', position: 0 },
+      ],
+    },
+    // Sandalias Mujer - Colección Ladies
+    {
+      title: 'Hawaii',
+      subtitle: 'Sandalias Hawaii con detalles exóticos',
+      description: 'Sandalias Hawaii con materiales exóticos. Diseño elegante y cómodo para la mujer moderna.',
+      gender: 'mujer',
+      material: 'pitón',
+      height: 'sandalia',
+      sku: 'LP-S-HWI',
+      categoryIds: [sandalias.id],
+      collectionIds: [ladies.id],
+      variants: [
+        { option1: 'Única', option2: 'Pitón rojo', priceMXN: 265000, stock: 50, sku: 'LP-S-HWI-PITON-ROJO' },
+        { option1: 'Única', option2: 'Pitón natural', priceMXN: 265000, stock: 50, sku: 'LP-S-HWI-PITON-NAT' },
+      ],
+      images: [
+        { url: '/hawaii piton rojo.png', alt: 'Hawaii Pitón Rojo', position: 0 },
+        { url: '/hawaii piton natural.png', alt: 'Hawaii Pitón Natural', position: 1 },
+      ],
+    },
+    {
+      title: 'Bali',
+      subtitle: 'Sandalias Bali con materiales exóticos',
+      description: 'Sandalias Bali confeccionadas con materiales exóticos de primera calidad. Elegancia y comodidad.',
+      gender: 'mujer',
+      material: 'avestruz',
+      height: 'sandalia',
+      sku: 'LP-S-BAL',
+      categoryIds: [sandalias.id],
+      collectionIds: [ladies.id],
+      variants: [
+        { option1: 'Única', option2: 'Avestruz café', priceMXN: 265000, stock: 50, sku: 'LP-S-BAL-AVES-CAF' },
+        { option1: 'Única', option2: 'Avestruz negro', priceMXN: 265000, stock: 50, sku: 'LP-S-BAL-AVES-NGR' },
+        { option1: 'Única', option2: 'Negro y pitón natural', priceMXN: 265000, stock: 50, sku: 'LP-S-BAL-PITON-MIX' },
+      ],
+      images: [
+        { url: '/bali avestruz cafe.png', alt: 'Bali Avestruz Café', position: 0 },
+        { url: '/bali avestruz negro.png', alt: 'Bali Avestruz Negro', position: 1 },
+        { url: '/bali negro y piton natural.png', alt: 'Bali Negro y Pitón Natural', position: 2 },
+      ],
+    },
+    {
+      title: 'Milo',
+      subtitle: 'Sandalias Milo en cocodrilo',
+      description: 'Sandalias Milo confeccionadas en piel de cocodrilo exótica. Máxima elegancia y exclusividad.',
+      gender: 'mujer',
+      material: 'cocodrilo',
+      height: 'sandalia',
+      sku: 'LP-S-MIL',
+      categoryIds: [sandalias.id],
+      collectionIds: [ladies.id],
+      variants: [
+        { option1: 'Única', option2: 'Cocodrilo café', priceMXN: 265000, stock: 50, sku: 'LP-S-MIL-COCO-CAF' },
+      ],
+      images: [
+        { url: '/milo.png', alt: 'Milo Cocodrilo Café', position: 0 },
+      ],
+    },
+    {
+      title: 'Bora Bora',
+      subtitle: 'Sandalias Bora Bora con estilo tropical',
+      description: 'Sandalias Bora Bora con inspiración tropical. Diseño único y materiales exóticos.',
+      gender: 'mujer',
+      material: 'pitón',
+      height: 'sandalia',
+      sku: 'LP-S-BRB',
+      categoryIds: [sandalias.id],
+      collectionIds: [ladies.id],
+      variants: [
+        { option1: 'Única', option2: 'Black Cherry', priceMXN: 265000, stock: 50, sku: 'LP-S-BRB-BLACK-CH' },
+        { option1: 'Única', option2: 'Pitón azul mora', priceMXN: 265000, stock: 50, sku: 'LP-S-BRB-PITON-AZM' },
+      ],
+      images: [
+        { url: '/bora bora black cherry.png', alt: 'Bora Bora Black Cherry', position: 0 },
+        { url: '/bora bora piton azul mora.png', alt: 'Bora Bora Pitón Azul Mora', position: 1 },
+      ],
+    },
+    {
+      title: 'Mallorca',
+      subtitle: 'Sandalias Mallorca con elegancia mediterránea',
+      description: 'Sandalias Mallorca con inspiración mediterránea. Diseño elegante y materiales premium.',
+      gender: 'mujer',
+      material: 'pitón',
+      height: 'sandalia',
+      sku: 'LP-S-MLL',
+      categoryIds: [sandalias.id],
+      collectionIds: [ladies.id],
+      variants: [
+        { option1: 'Única', option2: 'Pitón natural', priceMXN: 265000, stock: 50, sku: 'LP-S-MLL-PITON-NAT' },
+        { option1: 'Única', option2: 'Pitón coñac', priceMXN: 265000, stock: 50, sku: 'LP-S-MLL-PITON-CON' },
+      ],
+      images: [
+        { url: '/mallorca piton natural.png', alt: 'Mallorca Pitón Natural', position: 0 },
+        { url: '/malllorca piton.png', alt: 'Mallorca Pitón Coñac', position: 1 },
       ],
     },
   ];

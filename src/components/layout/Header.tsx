@@ -4,118 +4,7 @@ import Link from 'next/link';
 import { ShoppingCart, User, Search, Menu, X, Star } from 'lucide-react';
 import { useState } from 'react';
 import { useCartStore } from '@/lib/store';
-
-const navigation = {
-  departamentos: [
-    {
-      name: 'Hombre',
-      href: '/tienda?gender=hombre',
-      featured: 'Botas Western',
-      categories: [
-        {
-          name: 'Calzado',
-          href: '/tienda?gender=hombre&category=calzado',
-          items: [
-            { name: 'Botas Western', href: '/tienda?gender=hombre&category=botas', featured: true },
-            { name: 'Bota Alta', href: '/tienda?gender=hombre&category=bota-alta' },
-            { name: 'Botines', href: '/tienda?gender=hombre&category=botines' },
-            { name: 'Tenis', href: '/tienda?gender=hombre&category=tenis' },
-          ],
-        },
-        {
-          name: 'Accesorios',
-          href: '/tienda?gender=hombre&category=accesorios',
-          items: [
-            { name: 'Cintos', href: '/tienda?gender=hombre&category=cintos' },
-            { name: 'Bolsas', href: '/tienda?gender=hombre&category=bolsas' },
-          ],
-        },
-        {
-          name: 'Ropa',
-          href: '/tienda?gender=hombre&category=ropa',
-          items: [
-            { name: 'Chamarras', href: '/tienda?gender=hombre&category=chamarras' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Mujer',
-      href: '/tienda?gender=mujer',
-      featured: 'Bota Alta Exótica',
-      categories: [
-        {
-          name: 'Calzado',
-          href: '/tienda?gender=mujer&category=calzado',
-          items: [
-            { name: 'Bota Alta', href: '/tienda?gender=mujer&category=bota-alta', featured: true },
-            { name: 'Botas', href: '/tienda?gender=mujer&category=botas' },
-            { name: 'Botines', href: '/tienda?gender=mujer&category=botines' },
-            { name: 'Sandalias', href: '/tienda?gender=mujer&category=sandalias' },
-          ],
-        },
-        {
-          name: 'Accesorios',
-          href: '/tienda?gender=mujer&category=accesorios',
-          items: [
-            { name: 'Cintos', href: '/tienda?gender=mujer&category=cintos' },
-            { name: 'Bolsas', href: '/tienda?gender=mujer&category=bolsas' },
-          ],
-        },
-        {
-          name: 'Ropa',
-          href: '/tienda?gender=mujer&category=ropa',
-          items: [
-            { name: 'Chamarras', href: '/tienda?gender=mujer&category=chamarras' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Unisex',
-      href: '/tienda?gender=unisex',
-      featured: 'Accesorios Premium',
-      categories: [
-        {
-          name: 'Accesorios',
-          href: '/tienda?gender=unisex&category=accesorios',
-          items: [
-            { name: 'Bolsas', href: '/tienda?gender=unisex&category=bolsas' },
-            { name: 'Cintos', href: '/tienda?gender=unisex&category=cintos' },
-          ],
-        },
-      ],
-    },
-  ],
-  colecciones: [
-    { 
-      name: 'Piel Exótica', 
-      href: '/tienda?collection=piel-exotica',
-      description: 'Lujo y exclusividad',
-      featured: true
-    },
-    { 
-      name: 'Bota Alta', 
-      href: '/tienda?collection=bota-alta',
-      description: 'Elegancia western'
-    },
-    { 
-      name: 'Botines', 
-      href: '/tienda?collection=botines',
-      description: 'Comodidad premium'
-    },
-    { 
-      name: 'Casual', 
-      href: '/tienda?collection=casual',
-      description: 'Estilo moderno'
-    },
-    { 
-      name: 'Rodeo Fashion', 
-      href: '/tienda?collection=rodeo-fashion',
-      description: 'Tradición contemporánea'
-    },
-  ],
-};
+import { NAV } from '@/config/navigation';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -141,77 +30,122 @@ export function Header() {
 
           {/* Navegación desktop */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {navigation.departamentos.map((dept) => (
-              <div
-                key={dept.name}
-                className="relative group"
-                onMouseEnter={() => setActiveDepartment(dept.name)}
-                onMouseLeave={() => setActiveDepartment(null)}
+            {/* Mujer */}
+            <div
+              className="relative group"
+              onMouseEnter={() => setActiveDepartment('mujer')}
+              onMouseLeave={() => setActiveDepartment(null)}
+            >
+              <Link
+                href={NAV.mujer.href}
+                className="text-leather-black hover:text-saddle transition-colors font-medium py-2 border-b-2 border-transparent hover:border-saddle"
               >
-                <Link
-                  href={dept.href}
-                  className="text-leather-black hover:text-saddle transition-colors font-medium py-2 border-b-2 border-transparent hover:border-saddle"
-                >
-                  {dept.name}
-                </Link>
+                {NAV.mujer.label}
+              </Link>
 
-                {/* Mega menú */}
-                {activeDepartment === dept.name && (
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-screen bg-white shadow-leather-lg border-t border-camel/20 z-50">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                      <div className="grid grid-cols-4 gap-12">
-                        {/* Featured Section */}
-                        <div className="col-span-1">
-                          <div className="bg-gradient-to-br from-saddle/10 to-espresso/10 rounded-2xl p-6 border border-camel/20">
-                            <h3 className="font-heading text-xl text-leather-black mb-2">
-                              Destacado
-                            </h3>
-                            <p className="text-espresso text-sm mb-4">
-                              {dept.featured}
-                            </p>
-                            <Link
-                              href={dept.href}
-                              className="inline-flex items-center text-saddle hover:text-espresso transition-colors font-medium"
-                            >
-                              Ver Todo
-                              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </Link>
-                          </div>
+              {/* Mega menú Mujer */}
+              {activeDepartment === 'mujer' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-screen bg-white shadow-leather-lg border-t border-camel/20 z-50">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="grid grid-cols-4 gap-12">
+                      {/* Featured Section */}
+                      <div className="col-span-1">
+                        <div className="bg-gradient-to-br from-saddle/10 to-espresso/10 rounded-2xl p-6 border border-camel/20">
+                          <h3 className="font-heading text-xl text-leather-black mb-2">
+                            Destacado
+                          </h3>
+                          <p className="text-espresso text-sm mb-4">
+                            Sandalias Ladies
+                          </p>
+                          <Link
+                            href={NAV.mujer.href}
+                            className="inline-flex items-center text-saddle hover:text-espresso transition-colors font-medium"
+                          >
+                            Ver Todo
+                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </Link>
                         </div>
+                      </div>
 
-                        {/* Categories */}
-                        {dept.categories.map((category) => (
-                          <div key={category.name} className="col-span-1">
-                            <h3 className="font-heading text-lg text-leather-black mb-4 border-b border-camel/20 pb-2">
-                              {category.name}
-                            </h3>
-                            <ul className="space-y-3">
-                              {category.items.map((item) => (
-                                <li key={item.name}>
+                      {/* Categories */}
+                      {NAV.mujer.columns.map((column) => (
+                        <div key={column.title} className="col-span-1">
+                          <h3 className="font-heading text-lg text-leather-black mb-4 border-b border-camel/20 pb-2">
+                            {column.title}
+                          </h3>
+                          <ul className="space-y-3">
+                            {column.links.map((link) => (
+                              <li key={link.label}>
+                                {link.disabled ? (
+                                  <span className="text-camel cursor-not-allowed flex items-center opacity-60">
+                                    {link.label}
+                                    <span className="ml-2 text-xs">(Próximamente)</span>
+                                  </span>
+                                ) : (
                                   <Link
-                                    href={item.href}
-                                    className={`text-espresso hover:text-saddle transition-colors flex items-center ${
-                                      item.featured ? 'font-medium text-saddle' : ''
-                                    }`}
+                                    href={link.href}
+                                    className="text-espresso hover:text-saddle transition-colors flex items-center"
                                   >
-                                    {item.name}
-                                    {item.featured && (
+                                    {link.label}
+                                    {link.label === 'Sandalias' && (
                                       <Star className="w-3 h-3 ml-1 text-gold" />
                                     )}
                                   </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              )}
+            </div>
+
+            {/* Hombre */}
+            <div
+              className="relative group"
+              onMouseEnter={() => setActiveDepartment('hombre')}
+              onMouseLeave={() => setActiveDepartment(null)}
+            >
+              <Link
+                href={NAV.hombre.href}
+                className="text-leather-black hover:text-saddle transition-colors font-medium py-2 border-b-2 border-transparent hover:border-saddle"
+              >
+                {NAV.hombre.label}
+              </Link>
+
+              {/* Mega menú Hombre */}
+              {activeDepartment === 'hombre' && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-screen bg-white shadow-leather-lg border-t border-camel/20 z-50">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="grid grid-cols-3 gap-12">
+                      {/* Categories */}
+                      {NAV.hombre.columns.map((column) => (
+                        <div key={column.title} className="col-span-1">
+                          <h3 className="font-heading text-lg text-leather-black mb-4 border-b border-camel/20 pb-2">
+                            {column.title}
+                          </h3>
+                          <ul className="space-y-3">
+                            {column.links.map((link) => (
+                              <li key={link.label}>
+                                <span className="text-camel cursor-not-allowed flex items-center opacity-60">
+                                  {link.label}
+                                  <span className="ml-2 text-xs">(Próximamente)</span>
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Colecciones */}
             <div 
@@ -229,26 +163,42 @@ export function Header() {
                       Colecciones Premium
                     </h3>
                     <ul className="space-y-3">
-                      {navigation.colecciones.map((collection) => (
-                        <li key={collection.name}>
-                          <Link
-                            href={collection.href}
-                            className={`block py-2 text-espresso hover:text-saddle transition-colors ${
-                              collection.featured ? 'font-medium text-saddle' : ''
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span>{collection.name}</span>
-                              {collection.featured && (
-                                <Star className="w-3 h-3 text-gold" />
-                              )}
-                            </div>
-                            <p className="text-xs text-camel mt-1">
-                              {collection.description}
-                            </p>
-                          </Link>
-                        </li>
-                      ))}
+                      <li>
+                        <Link
+                          href="/tienda/mujer/sandalias"
+                          className="block py-2 text-saddle hover:text-espresso transition-colors font-medium"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>Ladies</span>
+                            <Star className="w-3 h-3 text-gold" />
+                          </div>
+                          <p className="text-xs text-camel mt-1">
+                            Sandalias exóticas para mujer
+                          </p>
+                        </Link>
+                      </li>
+                      <li>
+                        <span className="block py-2 text-camel cursor-not-allowed opacity-60">
+                          <div className="flex items-center justify-between">
+                            <span>Piel Exótica</span>
+                            <span className="text-xs">(Próximamente)</span>
+                          </div>
+                          <p className="text-xs text-camel mt-1">
+                            Lujo y exclusividad
+                          </p>
+                        </span>
+                      </li>
+                      <li>
+                        <span className="block py-2 text-camel cursor-not-allowed opacity-60">
+                          <div className="flex items-center justify-between">
+                            <span>Casual</span>
+                            <span className="text-xs">(Próximamente)</span>
+                          </div>
+                          <p className="text-xs text-camel mt-1">
+                            Estilo moderno
+                          </p>
+                        </span>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -308,45 +258,76 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-camel/20 shadow-leather">
           <div className="px-4 py-6 space-y-6">
-            {/* Departamentos móviles */}
-            {navigation.departamentos.map((dept) => (
-              <div key={dept.name}>
-                <Link
-                  href={dept.href}
-                  className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10"
-                >
-                  {dept.name}
-                </Link>
-                <div className="ml-4 mt-3 space-y-3">
-                  {dept.categories.map((category) => (
-                    <div key={category.name}>
-                      <Link
-                        href={category.href}
-                        className="block text-espresso font-medium py-2"
-                      >
-                        {category.name}
-                      </Link>
-                      <div className="ml-4 space-y-2">
-                        {category.items.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className={`block text-sm text-espresso py-1 ${
-                              item.featured ? 'text-saddle font-medium' : ''
-                            }`}
-                          >
-                            {item.name}
-                            {item.featured && (
-                              <Star className="inline w-3 h-3 ml-1 text-gold" />
-                            )}
-                          </Link>
-                        ))}
-                      </div>
+            {/* Mujer móvil */}
+            <div>
+              <Link
+                href={NAV.mujer.href}
+                className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10"
+              >
+                {NAV.mujer.label}
+              </Link>
+              <div className="ml-4 mt-3 space-y-3">
+                {NAV.mujer.columns.map((column) => (
+                  <div key={column.title}>
+                    <span className="block text-espresso font-medium py-2">
+                      {column.title}
+                    </span>
+                    <div className="ml-4 space-y-2">
+                      {column.links.map((link) => (
+                        <div key={link.label}>
+                          {link.disabled ? (
+                            <span className="block text-sm text-camel py-1 opacity-60">
+                              {link.label} (Próximamente)
+                            </span>
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className={`block text-sm text-espresso py-1 ${
+                                link.label === 'Sandalias' ? 'text-saddle font-medium' : ''
+                              }`}
+                            >
+                              {link.label}
+                              {link.label === 'Sandalias' && (
+                                <Star className="inline w-3 h-3 ml-1 text-gold" />
+                              )}
+                            </Link>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Hombre móvil */}
+            <div>
+              <Link
+                href={NAV.hombre.href}
+                className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10"
+              >
+                {NAV.hombre.label}
+              </Link>
+              <div className="ml-4 mt-3 space-y-3">
+                {NAV.hombre.columns.map((column) => (
+                  <div key={column.title}>
+                    <span className="block text-espresso font-medium py-2">
+                      {column.title}
+                    </span>
+                    <div className="ml-4 space-y-2">
+                      {column.links.map((link) => (
+                        <span
+                          key={link.label}
+                          className="block text-sm text-camel py-1 opacity-60"
+                        >
+                          {link.label} (Próximamente)
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Colecciones móviles */}
             <div>
@@ -354,25 +335,36 @@ export function Header() {
                 Colecciones
               </span>
               <div className="ml-4 mt-3 space-y-2">
-                {navigation.colecciones.map((collection) => (
-                  <Link
-                    key={collection.name}
-                    href={collection.href}
-                    className={`block text-espresso py-2 ${
-                      collection.featured ? 'text-saddle font-medium' : ''
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span>{collection.name}</span>
-                      {collection.featured && (
-                        <Star className="w-3 h-3 text-gold" />
-                      )}
-                    </div>
-                    <p className="text-xs text-camel mt-1">
-                      {collection.description}
-                    </p>
-                  </Link>
-                ))}
+                <Link
+                  href="/tienda/mujer/sandalias"
+                  className="block text-saddle font-medium py-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <span>Ladies</span>
+                    <Star className="w-3 h-3 text-gold" />
+                  </div>
+                  <p className="text-xs text-camel mt-1">
+                    Sandalias exóticas para mujer
+                  </p>
+                </Link>
+                <span className="block text-camel py-2 opacity-60">
+                  <div className="flex items-center justify-between">
+                    <span>Piel Exótica</span>
+                    <span className="text-xs">(Próximamente)</span>
+                  </div>
+                  <p className="text-xs text-camel mt-1">
+                    Lujo y exclusividad
+                  </p>
+                </span>
+                <span className="block text-camel py-2 opacity-60">
+                  <div className="flex items-center justify-between">
+                    <span>Casual</span>
+                    <span className="text-xs">(Próximamente)</span>
+                  </div>
+                  <p className="text-xs text-camel mt-1">
+                    Estilo moderno
+                  </p>
+                </span>
               </div>
             </div>
 

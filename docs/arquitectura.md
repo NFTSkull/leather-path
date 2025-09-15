@@ -230,3 +230,4 @@ npm run db:deploy        # Deploy del esquema
 ---
 
 **Leather Path** - Arquitectura Escalable y Mantenible 🏗️
+

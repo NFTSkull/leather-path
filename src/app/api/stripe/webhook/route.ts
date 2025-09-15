@@ -3,6 +3,7 @@ import { verifyWebhook } from '@/lib/payments/stripe';
 import { PrismaClient } from '@prisma/client';
 import { sendOrderEmail } from '@/lib/notifications/email';
 import { sendWhatsApp } from '@/lib/notifications/whatsapp';
+import Stripe from 'stripe';
 
 const prisma = new PrismaClient();
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleCheckoutCompletedEvent(event: any) {
+async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionCompletedEvent) {
   const session = event.data.object;
   
   try {
@@ -74,8 +75,8 @@ async function handleCheckoutCompletedEvent(event: any) {
     const customerName = session.customer_details?.name;
     const customerPhone = session.customer_details?.phone;
     
-    const shippingAddress = session.shipping_details?.address;
-    // const shippingName = session.shipping_details?.name;
+    const shippingAddress = (session as any).shipping_details?.address;
+    // const shippingName = (session as any).shipping_details?.name;
 
     // Calcular totales (por ahora usar los de Stripe)
     const amountTotal = session.amount_total || 0;

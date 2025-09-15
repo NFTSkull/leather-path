@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { getPrisma } from '@/lib/prisma';
 
 /**
  * Envía WhatsApp de confirmación de pedido
@@ -8,6 +6,7 @@ const prisma = new PrismaClient();
 export async function sendWhatsApp(orderId: string): Promise<{ success: boolean; error?: string }> {
   try {
     // Obtener datos de la orden
+    const prisma = getPrisma();
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {

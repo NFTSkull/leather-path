@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhook } from '@/lib/payments/stripe';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from '@/lib/prisma';
 import { sendOrderEmail } from '@/lib/notifications/email';
 import { sendWhatsApp } from '@/lib/notifications/whatsapp';
 import Stripe from 'stripe';
-
-const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,6 +60,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
     }
 
     // Obtener la orden de la base de datos
+    const prisma = getPrisma();
     const order = await prisma.order.findUnique({
       where: { id: orderId },
     });

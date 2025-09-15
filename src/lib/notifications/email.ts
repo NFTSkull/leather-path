@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { getPrisma } from '@/lib/prisma';
 
 /**
  * Envía email de confirmación de pedido
@@ -8,6 +6,7 @@ const prisma = new PrismaClient();
 export async function sendOrderEmail(orderId: string): Promise<{ success: boolean; error?: string }> {
   try {
     // Obtener datos de la orden
+    const prisma = getPrisma();
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -99,6 +98,7 @@ export async function sendOrderEmail(orderId: string): Promise<{ success: boolea
 export async function sendWhatsApp(orderId: string): Promise<{ success: boolean; error?: string }> {
   try {
     // Obtener datos de la orden
+    const prisma = getPrisma();
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/payments/stripe';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from '@/lib/prisma';
 import { randomBytes } from 'crypto';
-
-const prisma = new PrismaClient();
 
 // Esquema de validación para el request
 const checkoutRequestSchema = z.object({
@@ -26,6 +24,7 @@ export async function POST(request: NextRequest) {
     const orderId = randomBytes(16).toString('hex');
     
     // Crear orden preliminar en la base de datos
+    const prisma = getPrisma();
     await prisma.order.create({
       data: {
         id: orderId,

@@ -1,12 +1,23 @@
 import "server-only"; // garantiza que esto no se importe en el cliente
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+declare global {
+  var __prisma: PrismaClient | undefined;
+}
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ["error", "warn"], // no 'query' en prod
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient({
+    log: ["error", "warn"],
   });
+} else {
+  if (!global.__prisma) {
+    global.__prisma = new PrismaClient({
+      log: ["error", "warn"],
+    });
+  }
+  prisma = global.__prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export { prisma };

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prismaApi } from "@/lib/prisma-api";
 export async function GET() {
   try {
-    const rows = await prisma.product.findMany({
+    const rows = await prismaApi.product.findMany({
       where: { 
         gender: "mujer", 
         status: "published",

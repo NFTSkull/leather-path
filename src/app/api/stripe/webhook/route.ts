@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhook } from '@/lib/payments/stripe';
-import { PrismaClient } from '@prisma/client';
+import { prismaApi } from '@/lib/prisma-api';
 import { sendOrderEmail } from '@/lib/notifications/email';
 import { sendWhatsApp } from '@/lib/notifications/whatsapp';
 import Stripe from 'stripe';
-
-const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +70,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
     }
 
     // Obtener la orden de la base de datos
-    const order = await prisma.order.findUnique({
+    const order = await prismaApi.order.findUnique({
       where: { id: orderId },
     });
 
@@ -97,7 +95,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    const orderCount = await prisma.order.count({
+    const orderCount = await prismaApi.order.count({
       where: {
         createdAt: {
           gte: new Date(year, now.getMonth(), 1),
@@ -107,7 +105,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
     const orderNumber = `LP-${year}${month}-${String(orderCount).padStart(4, '0')}`;
 
     // Actualizar la orden
-    await prisma.order.update({
+    await prismaApi.order.update({
       where: { id: orderId },
       data: {
         status: 'paid',
@@ -122,7 +120,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
     // Crear/actualizar cliente si existe email
     let customer = null;
     if (customerEmail) {
-      customer = await prisma.customer.upsert({
+      customer = await prismaApi.customer.upsert({
         where: { email: customerEmail },
         update: {
           name: customerName || undefined,
@@ -136,7 +134,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
       });
 
       // Actualizar la orden con el customerId
-      await prisma.order.update({
+      await prismaApi.order.update({
         where: { id: orderId },
         data: { customerId: customer.id },
       });
@@ -144,7 +142,7 @@ async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionComplet
 
     // Crear dirección de envío si existe
     if (shippingAddress && customer) {
-      await prisma.address.create({
+      await prismaApi.address.create({
         data: {
           customerId: customer.id,
           line1: shippingAddress.line1 || '',

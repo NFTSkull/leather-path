@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/payments/stripe';
-import { PrismaClient } from '@prisma/client';
+import { prismaApi } from '@/lib/prisma-api';
 import { randomBytes } from 'crypto';
-
-const prisma = new PrismaClient();
 
 // Esquema de validación para el request
 const checkoutRequestSchema = z.object({
@@ -26,7 +24,7 @@ export async function POST(request: NextRequest) {
     const orderId = randomBytes(16).toString('hex');
     
     // Crear orden preliminar en la base de datos
-    await prisma.order.create({
+    await prismaApi.order.create({
       data: {
         id: orderId,
         subtotalMXN: 0, // Se calculará después
@@ -47,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     if (!checkoutResult.success) {
       // Si falla la creación de la sesión, eliminar la orden
-      await prisma.order.delete({
+      await prismaApi.order.delete({
         where: { id: orderId },
       });
       
@@ -58,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Actualizar la orden con el ID de la sesión de Stripe
-    await prisma.order.update({
+    await prismaApi.order.update({
       where: { id: orderId },
       data: {
         providerId: checkoutResult.sessionId,

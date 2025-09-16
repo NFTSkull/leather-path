@@ -1,180 +1,129 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyWebhook } from '@/lib/payments/stripe';
-import { prismaApi } from '@/lib/prisma-api';
-import { sendOrderEmail } from '@/lib/notifications/email';
-import { sendWhatsApp } from '@/lib/notifications/whatsapp';
+import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
 
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-08-27.basil',
+  });
+}
+
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
 export async function POST(request: NextRequest) {
+  const body = await request.text();
+  const signature = request.headers.get('stripe-signature')!;
+
+  let event: Stripe.Event;
+
   try {
-    // Verificar si el webhook está configurado
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      console.log('⚠️ STRIPE_WEBHOOK_SECRET no configurado - webhook deshabilitado');
-      return NextResponse.json(
-        { error: 'Webhook not configured yet' },
-        { status: 503 }
-      );
+    const stripe = getStripe();
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err);
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    
+    try {
+      // Obtener detalles de la sesión
+      const stripe = getStripe();
+      const sessionWithLineItems = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items', 'customer_details', 'shipping_details'],
+      });
+
+      const lineItems = sessionWithLineItems.line_items?.data || [];
+      const customerDetails = sessionWithLineItems.customer_details;
+      const shippingDetails = (sessionWithLineItems as any).shipping_details;
+
+      // Crear registro de Order en DB
+      const order = await prisma.order.create({
+        data: {
+          subtotalMXN: session.amount_subtotal || 0,
+          shippingMXN: session.shipping_cost?.amount_total || 0,
+          taxMXN: session.total_details?.amount_tax || 0,
+          totalMXN: session.amount_total || 0,
+          status: 'paid',
+          provider: 'stripe',
+          providerId: session.id,
+          customerId: null, // TODO: crear/actualizar customer si es necesario
+        },
+      });
+
+      // Crear OrderItems
+      for (const item of lineItems) {
+        if ((item as any).price_data?.product_data?.metadata) {
+          const metadata = (item as any).price_data.product_data.metadata;
+          const variantId = metadata.variantId;
+          const quantity = item.quantity || 1;
+
+          await prisma.orderItem.create({
+            data: {
+              orderId: order.id,
+              variantId: variantId,
+              title: (item as any).price_data.product_data.name || '',
+              option1: null,
+              option2: metadata.option2 || null,
+              unitPriceMXN: (item as any).price_data.unit_amount || 0,
+              qty: quantity,
+            },
+          });
+
+          // Descontar stock
+          await prisma.variant.update({
+            where: { id: variantId },
+            data: {
+              stock: {
+                decrement: quantity,
+              },
+            },
+          });
+        }
+      }
+
+      // Notificaciones (placeholders)
+      await sendOrderNotifications(order.id, session);
+
+      console.log(`Order ${order.id} created successfully`);
+
+    } catch (error) {
+      console.error('Error processing checkout.session.completed:', error);
+      return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ received: true });
+}
+
+async function sendOrderNotifications(orderId: string, session: Stripe.Checkout.Session) {
+  try {
+    // Email notification (si existe RESEND_API_KEY)
+    if (process.env.RESEND_API_KEY && process.env.SALES_EMAIL) {
+      await sendOrderEmail(orderId, session);
     }
 
-    // Leer el body raw para verificación de webhook
-    const body = await request.text();
-    const signature = request.headers.get('stripe-signature');
-
-    if (!signature) {
-      console.error('Missing Stripe signature');
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 400 }
-      );
+    // WhatsApp notification (si existen credenciales)
+    if (process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_PHONE_ID && process.env.SALES_PHONE) {
+      await sendOrderWhatsApp(orderId, session);
     }
-
-    // Verificar el webhook
-    const event = await verifyWebhook(body, signature);
-    if (!event) {
-      console.error('Invalid webhook signature');
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      );
-    }
-
-    // Procesar según el tipo de evento
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompletedEvent(event);
-        break;
-      
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
-    }
-
-    return NextResponse.json({ received: true });
-
   } catch (error) {
-    console.error('Error processing webhook:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
-    );
+    console.error('Notification error:', error);
   }
 }
 
-async function handleCheckoutCompletedEvent(event: Stripe.CheckoutSessionCompletedEvent) {
-  const session = event.data.object;
-  
-  try {
-    const orderId = session.metadata?.orderId;
-    if (!orderId) {
-      throw new Error('Order ID not found in session metadata');
-    }
+async function sendOrderEmail(orderId: string, session: Stripe.Checkout.Session) {
+  // Placeholder para email
+  console.log(`📧 Email notification for order ${orderId} to ${process.env.SALES_EMAIL}`);
+  // TODO: Implementar con Resend API
+}
 
-    // Obtener la orden de la base de datos
-    const order = await prismaApi.order.findUnique({
-      where: { id: orderId },
-    });
-
-    if (!order) {
-      throw new Error(`Order ${orderId} not found`);
-    }
-
-    // Extraer información del cliente y envío
-    const customerEmail = session.customer_details?.email;
-    const customerName = session.customer_details?.name;
-    const customerPhone = session.customer_details?.phone;
-    
-    const shippingAddress = (session as any).shipping_details?.address;
-    // const shippingName = (session as any).shipping_details?.name;
-
-    // Calcular totales (por ahora usar los de Stripe)
-    const amountTotal = session.amount_total || 0;
-    const amountSubtotal = session.amount_subtotal || 0;
-    const shippingCost = amountTotal - amountSubtotal;
-
-    // Generar número de orden
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const orderCount = await prismaApi.order.count({
-      where: {
-        createdAt: {
-          gte: new Date(year, now.getMonth(), 1),
-        },
-      },
-    });
-    const orderNumber = `LP-${year}${month}-${String(orderCount).padStart(4, '0')}`;
-
-    // Actualizar la orden
-    await prismaApi.order.update({
-      where: { id: orderId },
-      data: {
-        status: 'paid',
-        subtotalMXN: amountSubtotal,
-        shippingMXN: shippingCost,
-        taxMXN: 0, // Stripe maneja impuestos automáticamente
-        totalMXN: amountTotal,
-        providerId: session.id,
-      },
-    });
-
-    // Crear/actualizar cliente si existe email
-    let customer = null;
-    if (customerEmail) {
-      customer = await prismaApi.customer.upsert({
-        where: { email: customerEmail },
-        update: {
-          name: customerName || undefined,
-          phone: customerPhone || undefined,
-        },
-        create: {
-          email: customerEmail,
-          name: customerName || undefined,
-          phone: customerPhone || undefined,
-        },
-      });
-
-      // Actualizar la orden con el customerId
-      await prismaApi.order.update({
-        where: { id: orderId },
-        data: { customerId: customer.id },
-      });
-    }
-
-    // Crear dirección de envío si existe
-    if (shippingAddress && customer) {
-      await prismaApi.address.create({
-        data: {
-          customerId: customer.id,
-          line1: shippingAddress.line1 || '',
-          line2: shippingAddress.line2 || '',
-          city: shippingAddress.city || '',
-          state: shippingAddress.state || '',
-          postalCode: shippingAddress.postal_code || '',
-          country: shippingAddress.country || 'MX',
-          isDefault: true,
-        },
-      });
-    }
-
-    // TODO: Crear OrderItems basado en los items del carrito
-    // Por ahora solo logueamos la información
-    console.log('Order completed:', {
-      orderId,
-      orderNumber,
-      amountTotal,
-      customerEmail,
-      shippingAddress,
-    });
-
-    // TODO: Descontar stock de variantes
-    // Enviar notificaciones
-    await sendOrderEmail(orderId);
-    await sendWhatsApp(orderId);
-
-    console.log(`✅ Order ${orderNumber} processed successfully`);
-
-  } catch (error) {
-    console.error('Error handling checkout completed:', error);
-    throw error;
-  }
+async function sendOrderWhatsApp(orderId: string, session: Stripe.Checkout.Session) {
+  // Placeholder para WhatsApp
+  console.log(`📱 WhatsApp notification for order ${orderId} to ${process.env.SALES_PHONE}`);
+  // TODO: Implementar con WhatsApp Business API
 }

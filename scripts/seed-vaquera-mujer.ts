@@ -1,89 +1,127 @@
-import { prisma } from "@/lib/prisma";
+import { config } from 'dotenv';
+import { upsertProduct } from "./utils/upsertProduct";
 
-const productos = [
-  { title: "Armonia",  slug: "armonia" },
-  { title: "Adorada",  slug: "adorada" },
-  { title: "Liberty",  slug: "liberty" },
-  { title: "Orgullosa",slug: "orgullosa" },
-  { title: "Dolly",    slug: "dolly" },
-  { title: "Risueña",  slug: "risuena" }, // slug sin acento
-  { title: "Palmira",  slug: "palmira" },
-  { title: "Santorini",slug: "santorini" },
-  { title: "Milenia",  slug: "milenia" },
-];
-
-const variantes: Record<string, { name: string; sku: string }[]> = {
-  armonia:   [{ name:"Tabaco", sku:"LP-M-VQ-ARM-TBC" }, { name:"Shedron", sku:"LP-M-VQ-ARM-SHD" }],
-  adorada:   [{ name:"Negro",  sku:"LP-M-VQ-ADR-NGR" }, { name:"Tan",     sku:"LP-M-VQ-ADR-TAN" }],
-  liberty:   [{ name:"Tabaco", sku:"LP-M-VQ-LIB-TBC" }, { name:"Negro",   sku:"LP-M-VQ-LIB-NGR" }],
-  orgullosa: [{ name:"Tan",    sku:"LP-M-VQ-ORG-TAN" }, { name:"Shedron", sku:"LP-M-VQ-ORG-SHD" }],
-  dolly:     [{ name:"Gris",   sku:"LP-M-VQ-DOL-GRS" }, { name:"Miel",    sku:"LP-M-VQ-DOL-MIE" }],
-  risuena:   [{ name:"Café",   sku:"LP-M-VQ-RIS-CAF" }, { name:"Nogal",   sku:"LP-M-VQ-RIS-NOG" }],
-  palmira:   [{ name:"Glam",   sku:"LP-M-VQ-PAL-GLA" }, { name:"Chocolate", sku:"LP-M-VQ-PAL-CHC" }],
-  santorini: [{ name:"Miel",   sku:"LP-M-VQ-SAN-MIE" }, { name:"Negro",   sku:"LP-M-VQ-SAN-NGR" }],
-  milenia:   [{ name:"Miel",   sku:"LP-M-VQ-MIL-MIE" }],
-};
+// Cargar variables de entorno
+config();
 
 async function main() {
-  
-  console.log("🌱 Iniciando seed de Vaquera · Damas...");
-  
-  for (const p of productos) {
-    const det =
-      p.slug === "armonia"   ? "Vaquera · Piel res · WELT · Suela de cuero" :
-      p.slug === "adorada"   ? "Vaquera · Piel res · WELT · Tacón cuero/tapa antiderrapante · Estoperoles y bordado" :
-      p.slug === "liberty"   ? "Vaquera · Piel res · WELT · Refuerzo en tubos · Suela de cuero troquelada" :
-      p.slug === "orgullosa" ? "Vaquera · Piel res · WELT · Acabados a mano" :
-      p.slug === "dolly"     ? "Vaquera · Piel res · WELT · Diseño con estoperoles" :
-      p.slug === "risuena"   ? "Vaquera · Piel res · WELT · Diseño floral bordado · Punta rodeo" :
-      p.slug === "palmira"   ? "Vaquera · Piel res · WELT · Diseño bordado" :
-      p.slug === "santorini" ? "Vaquera · Piel res · WELT · Tubo bordado" :
-      "Vaquera · Piel res · WELT";
+  const price = 380000; // $3,800.00 MXN
 
-    console.log(`📦 Procesando ${p.title} (${p.slug})...`);
+  await upsertProduct({
+    title: "Armonia",
+    slug: "armonia",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Suela de cuero",
+    variants: [
+      { option2: "Tabaco",  sku: "LP-M-VQ-ARM-TBC", priceMXN: price },
+      { option2: "Shedron", sku: "LP-M-VQ-ARM-SHD", priceMXN: price },
+    ],
+  });
 
-    const up = await prisma.product.upsert({
-      where: { slug: p.slug },
-      update: { 
-        title: p.title, 
-        gender: "mujer", 
-        status: "published" 
-      },
-      create: { 
-        title: p.title, 
-        slug: p.slug, 
-        sku: `LP-M-VQ-${p.slug.toUpperCase()}`,
-        gender: "mujer", 
-        status: "published" 
-      },
-    });
+  await upsertProduct({
+    title: "Adorada",
+    slug: "adorada",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Tacón cuero/tapa antiderrapante · Estoperoles y bordado",
+    variants: [
+      { option2: "Negro", sku: "LP-M-VQ-ADR-NGR", priceMXN: price },
+      { option2: "Tan",   sku: "LP-M-VQ-ADR-TAN", priceMXN: price },
+    ],
+  });
 
-    const vts = variantes[p.slug] ?? [];
-    for (const [idx, v] of vts.entries()) {
-      await prisma.variant.upsert({
-        where: { sku: v.sku },
-        update: { 
-          option2: v.name, 
-          priceMXN: 380000, 
-          stock: 30, 
-          productId: up.id
-        },
-        create: { 
-          option2: v.name, 
-          sku: v.sku, 
-          priceMXN: 380000, 
-          stock: 30, 
-          productId: up.id
-        },
-      });
-      console.log(`  ✅ Variante: ${v.name} (${v.sku})`);
-    }
-  }
-  
-  console.log("🎉 Seed de Vaquera · Damas completado!");
+  await upsertProduct({
+    title: "Liberty",
+    slug: "liberty",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Refuerzo en tubos · Suela de cuero troquelada",
+    variants: [
+      { option2: "Tabaco", sku: "LP-M-VQ-LIB-TBC", priceMXN: price },
+      { option2: "Negro",  sku: "LP-M-VQ-LIB-NGR", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Orgullosa",
+    slug: "orgullosa",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Acabados a mano",
+    variants: [
+      { option2: "Tan",     sku: "LP-M-VQ-ORG-TAN", priceMXN: price },
+      { option2: "Shedron", sku: "LP-M-VQ-ORG-SHD", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Dolly",
+    slug: "dolly",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Estoperoles",
+    variants: [
+      { option2: "Gris", sku: "LP-M-VQ-DOL-GRS", priceMXN: price },
+      { option2: "Miel", sku: "LP-M-VQ-DOL-MIE", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Risueña",
+    slug: "risuena", // sin acento en slug
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Floral bordado · Punta rodeo",
+    variants: [
+      { option2: "Café",  sku: "LP-M-VQ-RIS-CAF", priceMXN: price },
+      { option2: "Nogal", sku: "LP-M-VQ-RIS-NOG", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Palmira",
+    slug: "palmira",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Bordado",
+    variants: [
+      { option2: "Glam",      sku: "LP-M-VQ-PAL-GLA", priceMXN: price },
+      { option2: "Chocolate", sku: "LP-M-VQ-PAL-CHC", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Santorini",
+    slug: "santorini",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT · Tubo bordado a juego",
+    variants: [
+      { option2: "Miel",  sku: "LP-M-VQ-SAN-MIE", priceMXN: price },
+      { option2: "Negro", sku: "LP-M-VQ-SAN-NGR", priceMXN: price },
+    ],
+  });
+
+  await upsertProduct({
+    title: "Milenia",
+    slug: "milenia",
+    gender: "mujer",
+    categorySlug: "botas",
+    collectionSlug: "vaquera",
+    description: "Vaquera · Piel res · WELT",
+    variants: [
+      { option2: "Miel", sku: "LP-M-VQ-MIL-MIE", priceMXN: price },
+    ],
+  });
 }
 
-main().then(() => process.exit(0)).catch(e => {
-  console.error("❌ Error en seed:", e);
-  process.exit(1);
-});
+main().then(()=>process.exit(0)).catch(e=>{console.error(e);process.exit(1)});

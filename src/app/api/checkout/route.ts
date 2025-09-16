@@ -1,84 +1,100 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { createCheckoutSession } from '@/lib/payments/stripe';
-import { prismaApi } from '@/lib/prisma-api';
-import { randomBytes } from 'crypto';
+import { prisma } from '@/lib/prisma';
+import Stripe from 'stripe';
 
-// Esquema de validación para el request
-const checkoutRequestSchema = z.object({
-  items: z.array(z.object({
-    variantId: z.string().min(1),
-    qty: z.number().min(1).max(10),
-  })).min(1),
-  customerEmail: z.string().email(),
-});
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-08-27.basil',
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
-    // Validar datos de entrada
-    const validatedData = checkoutRequestSchema.parse(body);
-    
-    // Generar ID único para la orden
-    const orderId = randomBytes(16).toString('hex');
-    
-    // Crear orden preliminar en la base de datos
-    await prismaApi.order.create({
-      data: {
-        id: orderId,
-        subtotalMXN: 0, // Se calculará después
-        shippingMXN: 0,
-        taxMXN: 0,
-        totalMXN: 0,
-        status: 'created',
-        provider: 'stripe',
-        providerId: null,
-      },
-    });
+    const { productId, variantSku, quantity = 1 } = body;
 
-    // Crear sesión de checkout con Stripe
-    const checkoutResult = await createCheckoutSession({
-      ...validatedData,
-      orderId,
-    });
-
-    if (!checkoutResult.success) {
-      // Si falla la creación de la sesión, eliminar la orden
-      await prismaApi.order.delete({
-        where: { id: orderId },
-      });
-      
+    // Validar payload
+    if (!productId || !variantSku || quantity < 1) {
       return NextResponse.json(
-        { error: checkoutResult.error },
+        { error: 'productId, variantSku y quantity son requeridos' },
         { status: 400 }
       );
     }
 
-    // Actualizar la orden con el ID de la sesión de Stripe
-    await prismaApi.order.update({
-      where: { id: orderId },
-      data: {
-        providerId: checkoutResult.sessionId,
+    // Buscar variant en DB
+    const variant = await prisma.variant.findUnique({
+      where: { sku: variantSku },
+      include: {
+        product: {
+          include: {
+            categories: true,
+            collections: true
+          }
+        }
+      }
+    });
+
+    if (!variant) {
+      return NextResponse.json(
+        { error: 'Variante no encontrada' },
+        { status: 404 }
+      );
+    }
+
+    // Verificar stock
+    if (variant.stock < quantity) {
+      return NextResponse.json(
+        { error: 'Stock insuficiente' },
+        { status: 400 }
+      );
+    }
+
+    // Crear sesión de Stripe Checkout
+    const stripe = getStripe();
+    const session = await stripe.checkout.sessions.create({
+      customer_creation: 'always',
+      phone_number_collection: {
+        enabled: true,
+      },
+      shipping_address_collection: {
+        allowed_countries: ['MX', 'US'],
+      },
+      allow_promotion_codes: true,
+      mode: 'payment',
+      line_items: [
+        {
+          quantity,
+          price_data: {
+            currency: 'mxn',
+            unit_amount: variant.priceMXN, // ya está en centavos
+            product_data: {
+              name: `${variant.product.title} – ${variant.option2}`,
+              description: variant.product.description || '',
+              metadata: {
+                sku: variant.sku,
+                productId: variant.product.id,
+                variantId: variant.id,
+              },
+            },
+          },
+        },
+      ],
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/pago/exito?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/pago/cancelado`,
+      metadata: {
+        productId: variant.product.id,
+        variantId: variant.id,
+        quantity: quantity.toString(),
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      url: checkoutResult.url,
-      orderId,
-    });
+    return NextResponse.json({ url: session.url });
 
   } catch (error) {
-    console.error('Error in checkout API:', error);
-    
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Datos de entrada inválidos', details: error.issues },
-        { status: 400 }
-      );
-    }
-
+    console.error('Checkout error:', error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

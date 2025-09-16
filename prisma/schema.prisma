@@ -14,7 +14,7 @@ model Category {
   id          String   @id @default(cuid())
   slug        String   @unique
   name        String
-  parentId    String?  @db.VarChar(191)
+  parentId    String?
   parent      Category? @relation("CategoryToParent", fields: [parentId], references: [id])
   children    Category[] @relation("CategoryToParent")
   products    ProductCategory[]

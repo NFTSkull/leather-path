@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { ProductPageClient } from '@/components/product/ProductPageClient';
+import { getProductBySlug } from '@/lib/products-mock';
 
 interface ProductPageProps {
   params: Promise<{
@@ -9,9 +10,18 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const product = getProductBySlug(slug);
+  
+  if (!product) {
+    return {
+      title: 'Producto no encontrado | Leather Path',
+      description: 'El producto que buscas no existe.',
+    };
+  }
+
   return {
-    title: `Hawaii | Leather Path`,
-    description: 'Sandalias Hawaii con materiales exóticos. Diseño elegante y cómodo para la mujer moderna.',
+    title: `${product.title} | Leather Path`,
+    description: product.description,
   };
 }
 

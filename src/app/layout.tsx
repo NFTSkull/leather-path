@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cinzel, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { generateOrganizationJsonLd } from "@/lib/seo";
+import { Header } from "@/components/layout/Header";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -80,7 +81,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cinzel.variable} ${playfairDisplay.variable} antialiased`}
       >
-        {children}
+        <Header />
+        <main className="min-h-screen">{children}</main>
       </body>
     </html>
   );

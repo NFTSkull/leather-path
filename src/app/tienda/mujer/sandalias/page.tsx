@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
-import { getSandaliaImage } from '@/lib/image-manifest';
+import { getSandaliaImage } from '@/lib/image-manifest-sandalias';
 import { toVariantSlug } from '@/lib/slugify';
 
 export const metadata: Metadata = {

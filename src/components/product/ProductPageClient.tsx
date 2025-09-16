@@ -6,54 +6,28 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrencyMXN } from '@/lib/currency';
-import { getSandaliaImage } from '@/lib/image-manifest';
+import { getSandaliaImage } from '@/lib/image-manifest-sandalias';
 import { toVariantSlug } from '@/lib/slugify';
+import { getProductBySlug } from '@/lib/products-mock';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
-// Datos mock del producto (en producción vendrían de la API)
-const productoData = {
-  id: 'hawaii',
-  title: 'Hawaii',
-  slug: 'hawaii',
-  subtitle: 'Sandalias Hawaii con detalles exóticos',
-  description: 'Sandalias Hawaii con materiales exóticos. Diseño elegante y cómodo para la mujer moderna. Confeccionadas con los más finos materiales de pitón, estas sandalias combinan estilo y comodidad.',
-  gender: 'mujer',
-  material: 'pitón',
-  height: 'sandalia',
-  sku: 'LP-S-HWI',
-  badge: 'Ladies',
-  variants: [
-    { 
-      id: 'variant-1',
-      name: 'Pitón rojo', 
-      sku: 'LP-S-HWI-PITON-ROJO',
-      priceMXN: 265000,
-      stock: 50,
-    },
-    { 
-      id: 'variant-2',
-      name: 'Pitón natural', 
-      sku: 'LP-S-HWI-PITON-NAT',
-      priceMXN: 265000,
-      stock: 50,
-    },
-  ],
-  features: [
-    'Material: Pitón exótico de primera calidad',
-    'Forro: Cuero suave para máximo confort',
-    'Suela: Cuero con diseño antideslizante',
-    'Hecho a mano por artesanos expertos',
-    'Garantía de calidad Leather Path',
-  ],
-  care: [
-    'Limpiar con paño suave y seco',
-    'Aplicar crema para cuero cada 3 meses',
-    'Evitar contacto con agua',
-    'Guardar en lugar fresco y seco',
-  ],
-};
-
 export function ProductPageClient({ slug }: { slug: string }) {
+  const productoData = getProductBySlug(slug);
+  
+  if (!productoData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-leather-black mb-4">Producto no encontrado</h1>
+          <p className="text-espresso mb-6">El producto que buscas no existe.</p>
+          <Link href="/tienda/mujer/sandalias" className="text-saddle hover:text-espresso">
+            Volver a Sandalias
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const [selectedVariant, setSelectedVariant] = React.useState(productoData.variants[0]);
 
   return (

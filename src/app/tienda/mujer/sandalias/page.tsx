@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
+import { getLocalImagePath, getProductImageAlt } from '@/lib/images/getImageUrl';
 
 export const metadata: Metadata = {
   title: 'Sandalias para Mujer | Leather Path',
@@ -17,7 +18,6 @@ const sandaliasMujer = [
     slug: 'hawaii',
     subtitle: 'Sandalias Hawaii con detalles exóticos',
     price: 265000, // en centavos
-    image: '/hawaii piton rojo.png',
     badge: 'Ladies',
     variants: [
       { name: 'Pitón rojo', sku: 'LP-S-HWI-PITON-ROJO' },
@@ -30,7 +30,6 @@ const sandaliasMujer = [
     slug: 'bali',
     subtitle: 'Sandalias Bali con materiales exóticos',
     price: 265000,
-    image: '/bali avestruz cafe.png',
     badge: 'Ladies',
     variants: [
       { name: 'Avestruz café', sku: 'LP-S-BAL-AVES-CAF' },
@@ -44,7 +43,6 @@ const sandaliasMujer = [
     slug: 'milo',
     subtitle: 'Sandalias Milo en cocodrilo',
     price: 265000,
-    image: '/milo.png',
     badge: 'Ladies',
     variants: [
       { name: 'Cocodrilo café', sku: 'LP-S-MIL-COCO-CAF' },
@@ -56,7 +54,6 @@ const sandaliasMujer = [
     slug: 'bora-bora',
     subtitle: 'Sandalias Bora Bora con estilo tropical',
     price: 265000,
-    image: '/bora bora black cherry.png',
     badge: 'Ladies',
     variants: [
       { name: 'Black Cherry', sku: 'LP-S-BRB-BLACK-CH' },
@@ -69,7 +66,6 @@ const sandaliasMujer = [
     slug: 'mallorca',
     subtitle: 'Sandalias Mallorca con elegancia mediterránea',
     price: 265000,
-    image: '/mallorca piton natural.png',
     badge: 'Ladies',
     variants: [
       { name: 'Pitón natural', sku: 'LP-S-MLL-PITON-NAT' },
@@ -139,8 +135,8 @@ export default function SandaliasMujerPage() {
                   {/* Imagen */}
                   <div className="relative aspect-square overflow-hidden">
                     <Image
-                      src={producto.image}
-                      alt={producto.title}
+                      src={getLocalImagePath(producto.title, producto.variants[0]?.name)}
+                      alt={getProductImageAlt(producto.title, producto.variants[0]?.name)}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />

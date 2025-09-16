@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrencyMXN } from '@/lib/currency';
+import { getLocalImagePath, getProductImageAlt } from '@/lib/images/getImageUrl';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
 // Datos mock del producto (en producción vendrían de la API)
@@ -20,10 +21,6 @@ const productoData = {
   height: 'sandalia',
   sku: 'LP-S-HWI',
   badge: 'Ladies',
-  images: [
-    { url: '/hawaii piton rojo.png', alt: 'Hawaii Pitón Rojo', position: 0 },
-    { url: '/hawaii piton natural.png', alt: 'Hawaii Pitón Natural', position: 1 },
-  ],
   variants: [
     { 
       id: 'variant-1',
@@ -31,7 +28,6 @@ const productoData = {
       sku: 'LP-S-HWI-PITON-ROJO',
       priceMXN: 265000,
       stock: 50,
-      image: '/hawaii piton rojo.png'
     },
     { 
       id: 'variant-2',
@@ -39,7 +35,6 @@ const productoData = {
       sku: 'LP-S-HWI-PITON-NAT',
       priceMXN: 265000,
       stock: 50,
-      image: '/hawaii piton natural.png'
     },
   ],
   features: [
@@ -86,8 +81,8 @@ export function ProductPageClient({ slug }: { slug: string }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <Image
-                src={selectedVariant.image}
-                alt={selectedVariant.name}
+                src={getLocalImagePath(productoData.title, selectedVariant.name)}
+                alt={getProductImageAlt(productoData.title, selectedVariant.name)}
                 fill
                 className="object-cover"
                 priority
@@ -99,18 +94,15 @@ export function ProductPageClient({ slug }: { slug: string }) {
 
             {/* Miniaturas */}
             <div className="grid grid-cols-2 gap-4">
-              {productoData.images.map((image, index) => (
+              {productoData.variants.map((variant, index) => (
                 <div
                   key={index}
                   className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
-                  onClick={() => {
-                    const variant = productoData.variants.find(v => v.image === image.url);
-                    if (variant) setSelectedVariant(variant);
-                  }}
+                  onClick={() => setSelectedVariant(variant)}
                 >
                   <Image
-                    src={image.url}
-                    alt={image.alt}
+                    src={getLocalImagePath(productoData.title, variant.name)}
+                    alt={getProductImageAlt(productoData.title, variant.name)}
                     fill
                     className="object-cover"
                   />
@@ -169,8 +161,8 @@ export function ProductPageClient({ slug }: { slug: string }) {
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden border border-camel/20">
                           <Image
-                            src={variant.image}
-                            alt={variant.name}
+                            src={getLocalImagePath(productoData.title, variant.name)}
+                            alt={getProductImageAlt(productoData.title, variant.name)}
                             fill
                             className="object-cover"
                           />

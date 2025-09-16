@@ -10,7 +10,7 @@ import miloCocodriloCafe from "/public/img/products/sandalias/milo-cocodrilo-caf
 import boraBoraBlackCherry from "/public/img/products/sandalias/bora-bora-black-cherry.png";
 import boraBoraPitonAzulMora from "/public/img/products/sandalias/bora-bora-piton-azul-mora.png";
 import mallorcaPitonNatural from "/public/img/products/sandalias/mallorca-piton-natural.png";
-import mallorcaPitonConac from "/public/img/products/sandalias/mallorca-piton-natural.png"; // Usando la misma imagen por ahora
+import mallorcaPitonConac from "/public/img/products/sandalias/mallorca-piton-natural.png"; // Usando la misma imagen hasta tener la específica
 
 export const SANDALIAS_IMG: Record<string, string> = {
   "hawaii-piton-rojo": hawaiiPitonRojo.src,

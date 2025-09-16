@@ -9,6 +9,7 @@ import { formatCurrencyMXN } from '@/lib/currency';
 import { getSandaliaImage } from '@/lib/image-manifest-sandalias';
 import { toVariantSlug } from '@/lib/slugify';
 import { getProductBySlug } from '@/lib/products-mock';
+import { VariantSelector } from '@/components/product/VariantSelector';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
 export function ProductPageClient({ slug }: { slug: string }) {
@@ -119,54 +120,12 @@ export function ProductPageClient({ slug }: { slug: string }) {
             </div>
 
             {/* Selector de variantes */}
-            <div>
-              <h3 className="text-lg font-heading text-leather-black mb-3">
-                Variantes Disponibles
-              </h3>
-              <div className="space-y-3">
-                {productoData.variants.map((variant) => (
-                  <div
-                    key={variant.id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                      selectedVariant.id === variant.id
-                        ? 'border-saddle bg-saddle/5'
-                        : 'border-camel/30 hover:border-saddle/50'
-                    }`}
-                    onClick={() => setSelectedVariant(variant)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 relative rounded-lg overflow-hidden border border-camel/20">
-                          <Image
-                            src={getSandaliaImage(productoData.slug, toVariantSlug(variant.name))}
-                            alt={`${productoData.title} - ${variant.name}`}
-                            fill
-                            className="object-cover"
-                            sizes="48px"
-                          />
-                        </div>
-                        <div>
-                          <p className="font-medium text-leather-black">
-                            {variant.name}
-                          </p>
-                          <p className="text-sm text-espresso">
-                            SKU: {variant.sku}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-leather-black">
-                          {formatCurrencyMXN(variant.priceMXN)}
-                        </p>
-                        <p className="text-sm text-camel">
-                          Stock: {variant.stock}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <VariantSelector
+              productSlug={productoData.slug}
+              variants={productoData.variants}
+              selectedVariant={selectedVariant}
+              onVariantChange={setSelectedVariant}
+            />
 
             {/* Botones de acción */}
             <div className="space-y-4">

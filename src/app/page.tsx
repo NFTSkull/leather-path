@@ -1,4 +1,3 @@
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import Link from 'next/link';
@@ -112,8 +111,6 @@ const benefits = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-ivory">
-      <Header />
-      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-leather-black to-espresso text-ivory">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

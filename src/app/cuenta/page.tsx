@@ -1,4 +1,3 @@
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import Link from 'next/link';
 import { ArrowLeft, User, Package, Heart, Settings } from 'lucide-react';
@@ -6,7 +5,6 @@ import { ArrowLeft, User, Package, Heart, Settings } from 'lucide-react';
 export default function CuentaPage() {
   return (
     <div className="min-h-screen bg-ivory">
-      <Header />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Breadcrumb */}

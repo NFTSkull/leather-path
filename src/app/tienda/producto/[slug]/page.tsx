@@ -2,6 +2,10 @@ import { Metadata } from 'next';
 import { ProductPageClient } from '@/components/product/ProductPageClient';
 import { getProductBySlug } from '@/lib/products-mock';
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const dynamicParams = true;
+
 interface ProductPageProps {
   params: Promise<{
     slug: string;

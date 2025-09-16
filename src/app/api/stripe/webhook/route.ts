@@ -7,6 +7,16 @@ import Stripe from 'stripe';
 
 export async function POST(request: NextRequest) {
   try {
+    // Verificar si el webhook está configurado
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+      console.log('⚠️ STRIPE_WEBHOOK_SECRET no configurado - webhook deshabilitado');
+      return NextResponse.json(
+        { error: 'Webhook not configured yet' },
+        { status: 503 }
+      );
+    }
+
     // Leer el body raw para verificación de webhook
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');

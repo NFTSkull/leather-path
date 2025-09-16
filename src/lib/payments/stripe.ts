@@ -97,10 +97,16 @@ export async function verifyWebhook(
   signature: string
 ): Promise<Stripe.Event | null> {
   try {
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+      console.log('⚠️ STRIPE_WEBHOOK_SECRET no configurado');
+      return null;
+    }
+
     const event = stripe.webhooks.constructEvent(
       payload,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      webhookSecret
     );
     return event;
   } catch (error) {

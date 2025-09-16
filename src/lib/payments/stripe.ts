@@ -1,10 +1,17 @@
 import Stripe from 'stripe';
 import { z } from 'zod';
 
-// Configuración de Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-08-27.basil',
-});
+// Función lazy para obtener Stripe
+function getStripe(): Stripe {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  
+  return new Stripe(secretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+}
 
 // Esquemas de validación
 const checkoutItemSchema = z.object({
@@ -54,7 +61,7 @@ export async function createCheckoutSession({
       });
     }
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
@@ -103,7 +110,7 @@ export async function verifyWebhook(
       return null;
     }
 
-    const event = stripe.webhooks.constructEvent(
+    const event = getStripe().webhooks.constructEvent(
       payload,
       signature,
       webhookSecret

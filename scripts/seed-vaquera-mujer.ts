@@ -1,4 +1,4 @@
-import { getPrisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 const productos = [
   { title: "Armonia",  slug: "armonia" },
@@ -25,7 +25,6 @@ const variantes: Record<string, { name: string; sku: string }[]> = {
 };
 
 async function main() {
-  const prisma = getPrisma();
   
   console.log("🌱 Iniciando seed de Vaquera · Damas...");
   

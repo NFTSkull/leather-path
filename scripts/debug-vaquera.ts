@@ -1,8 +1,7 @@
 // scripts/debug-vaquera.ts
-import { getPrisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 async function main() {
-  const prisma = getPrisma();
   
   console.log("🔍 Verificando productos Vaquera · Damas en DB...");
   

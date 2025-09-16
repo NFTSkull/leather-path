@@ -8,7 +8,7 @@ STRIPE_SECRET_KEY=sk_live_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
 
 # Webhook Secret (obtener de Stripe Dashboard)
-STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_WEBHOOK_SECRET=whsec_Pswc00SZIT99YsZ7JNUOlSNcwuJoSwEx
 
 # Base de datos
 DATABASE_URL=postgresql://...
@@ -26,7 +26,11 @@ WHATSAPP_API_KEY=""
 
 # 1. Ve a tu proyecto en Vercel Dashboard
 # 2. Settings > Environment Variables
-# 3. Agrega cada variable con su valor
+# 3. Agrega cada variable con su valor:
+#    - STRIPE_SECRET_KEY
+#    - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+#    - STRIPE_WEBHOOK_SECRET
+#    - NEXT_PUBLIC_SITE_URL
 # 4. Marca "Production" para todas
 # 5. Redeploy el proyecto
 
@@ -35,6 +39,8 @@ WHATSAPP_API_KEY=""
 # =====================================
 
 # - Estas son claves LIVE de Stripe (producción)
-# - Asegúrate de tener el webhook configurado en Stripe
-# - El webhook debe apuntar a: https://tu-dominio.vercel.app/api/stripe/webhook
+# - Webhook configurado: we_1S7mTBFFsnH6MBnJHUJGdhd6
+# - URL del webhook: https://leather-path.vercel.app/api/stripe/webhook
+# - Eventos: checkout.session.completed
 # - Necesitas configurar una base de datos PostgreSQL
+# - Los pagos serán REALES una vez configurado

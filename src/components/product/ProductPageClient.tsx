@@ -12,8 +12,9 @@ import { getProductBySlug } from '@/lib/products-mock';
 import { VariantSelector } from '@/components/product/VariantSelector';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
-export function ProductPageClient({ slug }: { slug: string }) {
-  const productoData = getProductBySlug(slug);
+export function ProductPageClient({ slug, productData }: { slug: string; productData?: any }) {
+  // Si tenemos datos de Prisma, los usamos; si no, usamos los mock
+  const productoData = productData || getProductBySlug(slug);
   
   if (!productoData) {
     return (
@@ -29,7 +30,7 @@ export function ProductPageClient({ slug }: { slug: string }) {
     );
   }
 
-  const [selectedVariant, setSelectedVariant] = React.useState(productoData.variants[0]);
+  const [selectedVariant, setSelectedVariant] = React.useState(productoData.variants[0] || {});
 
   return (
     <div className="min-h-screen bg-white">
@@ -57,8 +58,8 @@ export function ProductPageClient({ slug }: { slug: string }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <Image
-                src={getSandaliaImage(productoData.slug, toVariantSlug(selectedVariant.name))}
-                alt={`${productoData.title} - ${selectedVariant.name}`}
+                src={getSandaliaImage(productoData.slug, toVariantSlug(selectedVariant.option2 || selectedVariant.option1 || ''))}
+                alt={`${productoData.title} - ${selectedVariant.option2 || selectedVariant.option1 || ''}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -71,15 +72,15 @@ export function ProductPageClient({ slug }: { slug: string }) {
 
             {/* Miniaturas */}
             <div className="grid grid-cols-2 gap-4">
-              {productoData.variants.map((variant, index) => (
+              {productoData.variants.map((variant: any, index: number) => (
                 <div
                   key={index}
                   className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
                   onClick={() => setSelectedVariant(variant)}
                 >
                   <Image
-                    src={getSandaliaImage(productoData.slug, toVariantSlug(variant.name))}
-                    alt={`${productoData.title} - ${variant.name}`}
+                    src={getSandaliaImage(productoData.slug, toVariantSlug(variant.option2 || variant.option1 || ''))}
+                    alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 50vw, 25vw"
@@ -173,7 +174,7 @@ export function ProductPageClient({ slug }: { slug: string }) {
                   Características
                 </h3>
                 <ul className="space-y-2">
-                  {productoData.features.map((feature, index) => (
+                  {productoData.features?.map((feature: any, index: number) => (
                     <li key={index} className="flex items-start space-x-2 text-espresso">
                       <span className="text-saddle mt-1">•</span>
                       <span>{feature}</span>
@@ -187,7 +188,7 @@ export function ProductPageClient({ slug }: { slug: string }) {
                   Cuidado
                 </h3>
                 <ul className="space-y-2">
-                  {productoData.care.map((care, index) => (
+                  {productoData.care?.map((care: any, index: number) => (
                     <li key={index} className="flex items-start space-x-2 text-espresso">
                       <span className="text-saddle mt-1">•</span>
                       <span>{care}</span>

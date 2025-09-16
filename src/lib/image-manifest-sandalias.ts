@@ -21,11 +21,14 @@ export const SANDALIAS_IMG: Record<string, string> = {
   "milo-cocodrilo-cafe": miloCocodriloCafe.src,
   "bora-bora-black-cherry": boraBoraBlackCherry.src,
   "bora-bora-piton-azul-mora": boraBoraPitonAzulMora.src,
-  "mallorca-piton-natural": mallorcaPitonNatural.src,
+  // Mallorca
   "mallorca-piton-conac": mallorcaPitonConac.src,
+  "mallorca-piton-natural": mallorcaPitonNatural.src,
+  // ALIAS por si hay asset subido como "mallorca-piton.png"
+  "mallorca-piton": mallorcaPitonConac.src,
 };
 
 export function getSandaliaImage(slug: string, variantSlug: string) {
   const key = `${slug}-${variantSlug}`.toLowerCase();
-  return SANDALIAS_IMG[key] ?? placeholder.src;
+  return SANDALIAS_IMG[key] ?? SANDALIAS_IMG[`${slug}`] ?? placeholder.src;
 }

@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrencyMXN } from '@/lib/currency';
-import { getLocalImagePath, getProductImageAlt } from '@/lib/images/getImageUrl';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
+import { getProductImageSrc } from '@/lib/images';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
 // Datos mock del producto (en producción vendrían de la API)
@@ -80,9 +80,9 @@ export function ProductPageClient({ slug }: { slug: string }) {
           <div className="space-y-4">
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
-              <Image
-                src={getLocalImagePath(productoData.title, selectedVariant.name)}
-                alt={getProductImageAlt(productoData.title, selectedVariant.name)}
+              <ImageWithFallback
+                src={getProductImageSrc(productoData.slug, selectedVariant.name)}
+                alt={`${productoData.title} - ${selectedVariant.name}`}
                 fill
                 className="object-cover"
                 priority
@@ -100,9 +100,9 @@ export function ProductPageClient({ slug }: { slug: string }) {
                   className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
                   onClick={() => setSelectedVariant(variant)}
                 >
-                  <Image
-                    src={getLocalImagePath(productoData.title, variant.name)}
-                    alt={getProductImageAlt(productoData.title, variant.name)}
+                  <ImageWithFallback
+                    src={getProductImageSrc(productoData.slug, variant.name)}
+                    alt={`${productoData.title} - ${variant.name}`}
                     fill
                     className="object-cover"
                   />
@@ -160,9 +160,9 @@ export function ProductPageClient({ slug }: { slug: string }) {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden border border-camel/20">
-                          <Image
-                            src={getLocalImagePath(productoData.title, variant.name)}
-                            alt={getProductImageAlt(productoData.title, variant.name)}
+                          <ImageWithFallback
+                            src={getProductImageSrc(productoData.slug, variant.name)}
+                            alt={`${productoData.title} - ${variant.name}`}
                             fill
                             className="object-cover"
                           />

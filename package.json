@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "tsx scripts/verify-images.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

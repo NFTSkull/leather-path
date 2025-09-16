@@ -1,6 +1,7 @@
 /**
  * Helpers para manejo de imágenes de productos
  */
+import { asset } from './assets';
 
 /**
  * Convierte nombre de variante a slug
@@ -29,7 +30,7 @@ export function toVariantSlug(name: string): string {
  * Genera la ruta de imagen para un producto y variante
  */
 export function productImagePath(slug: string, variantSlug: string): string {
-  return `/img/products/sandalias/${slug}-${variantSlug}.png`;
+  return asset(`/img/products/sandalias/${slug}-${variantSlug}.png`);
 }
 
 /**

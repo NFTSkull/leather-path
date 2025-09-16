@@ -54,7 +54,7 @@ const featuredProducts = [
     bgColor: '7A5C3E',
     textColor: 'FFFFFF',
     collection: 'Línea Normal',
-    href: '/producto/bota-western-becerro',
+    href: '/tienda/producto/bota-western-becerro',
   },
   {
     id: '2',
@@ -63,7 +63,7 @@ const featuredProducts = [
     bgColor: '0B0B0C',
     textColor: 'FFFFFF',
     collection: 'Piel Exótica',
-    href: '/producto/bota-alta-avestruz',
+    href: '/tienda/producto/bota-alta-avestruz',
   },
   {
     id: '3',
@@ -72,7 +72,7 @@ const featuredProducts = [
     bgColor: 'D0B08C',
     textColor: '000000',
     collection: 'Casual',
-    href: '/producto/botin-casual',
+    href: '/tienda/producto/botin-casual',
   },
   {
     id: '4',
@@ -81,7 +81,7 @@ const featuredProducts = [
     bgColor: 'D0B08C',
     textColor: '000000',
     collection: 'Línea Normal',
-    href: '/producto/cinto-becerro',
+    href: '/tienda/producto/cinto-becerro',
   },
 ];
 

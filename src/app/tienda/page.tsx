@@ -14,7 +14,7 @@ const products = [
     material: 'becerro',
     gender: 'hombre',
     inStock: true,
-    href: '/producto/bota-western-becerro',
+    href: '/tienda/producto/bota-western-becerro',
   },
   {
     id: '2',
@@ -26,7 +26,7 @@ const products = [
     material: 'avestruz',
     gender: 'mujer',
     inStock: true,
-    href: '/producto/bota-alta-avestruz',
+    href: '/tienda/producto/bota-alta-avestruz',
   },
   {
     id: '3',
@@ -38,7 +38,7 @@ const products = [
     material: 'normal',
     gender: 'unisex',
     inStock: true,
-    href: '/producto/botin-casual',
+    href: '/tienda/producto/botin-casual',
   },
   {
     id: '4',
@@ -50,7 +50,7 @@ const products = [
     material: 'normal',
     gender: 'hombre',
     inStock: true,
-    href: '/producto/tenis-western',
+    href: '/tienda/producto/tenis-western',
   },
   {
     id: '5',
@@ -62,7 +62,7 @@ const products = [
     material: 'becerro',
     gender: 'hombre',
     inStock: true,
-    href: '/producto/cinto-becerro',
+    href: '/tienda/producto/cinto-becerro',
   },
   {
     id: '6',
@@ -74,7 +74,7 @@ const products = [
     material: 'normal',
     gender: 'mujer',
     inStock: true,
-    href: '/producto/bolsa-tote-cuero',
+    href: '/tienda/producto/bolsa-tote-cuero',
   },
   {
     id: '7',
@@ -86,7 +86,7 @@ const products = [
     material: 'normal',
     gender: 'hombre',
     inStock: true,
-    href: '/producto/chamarra-western',
+    href: '/tienda/producto/chamarra-western',
   },
   {
     id: '8',
@@ -98,7 +98,7 @@ const products = [
     material: 'normal',
     gender: 'mujer',
     inStock: true,
-    href: '/producto/bota-rodeo-fashion',
+    href: '/tienda/producto/bota-rodeo-fashion',
   },
 ];
 

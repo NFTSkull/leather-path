@@ -1,13 +1,10 @@
 import Link from 'next/link';
-import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-ivory">
-      <Header />
-      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
         <div className="mb-8">
           <h1 className="text-6xl font-display text-leather-black mb-4">404</h1>

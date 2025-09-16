@@ -17,3 +17,15 @@ export function slugify(text: string): string {
     // Quitar guiones al inicio y final
     .replace(/^-+|-+$/g, '');
 }
+
+/**
+ * Convierte nombre de variante a slug específico para imágenes
+ */
+export function toVariantSlug(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}

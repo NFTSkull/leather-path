@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrencyMXN } from '@/lib/currency';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
-import { getProductImageSrc } from '@/lib/images';
+import { getSandaliaImage } from '@/lib/image-manifest';
+import { toVariantSlug } from '@/lib/slugify';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 
 // Datos mock del producto (en producción vendrían de la API)
@@ -80,11 +81,12 @@ export function ProductPageClient({ slug }: { slug: string }) {
           <div className="space-y-4">
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
-              <ImageWithFallback
-                src={getProductImageSrc(productoData.slug, selectedVariant.name)}
+              <Image
+                src={getSandaliaImage(productoData.slug, toVariantSlug(selectedVariant.name))}
                 alt={`${productoData.title} - ${selectedVariant.name}`}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
               <Badge className="absolute top-4 left-4 bg-gold text-leather-black font-medium">
@@ -100,11 +102,12 @@ export function ProductPageClient({ slug }: { slug: string }) {
                   className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
                   onClick={() => setSelectedVariant(variant)}
                 >
-                  <ImageWithFallback
-                    src={getProductImageSrc(productoData.slug, variant.name)}
+                  <Image
+                    src={getSandaliaImage(productoData.slug, toVariantSlug(variant.name))}
                     alt={`${productoData.title} - ${variant.name}`}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>
               ))}
@@ -160,11 +163,12 @@ export function ProductPageClient({ slug }: { slug: string }) {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden border border-camel/20">
-                          <ImageWithFallback
-                            src={getProductImageSrc(productoData.slug, variant.name)}
+                          <Image
+                            src={getSandaliaImage(productoData.slug, toVariantSlug(variant.name))}
                             alt={`${productoData.title} - ${variant.name}`}
                             fill
                             className="object-cover"
+                            sizes="48px"
                           />
                         </div>
                         <div>

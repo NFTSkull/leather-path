@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
-import { getProductImageSrc } from '@/lib/images';
+import { getSandaliaImage } from '@/lib/image-manifest';
+import { toVariantSlug } from '@/lib/slugify';
 
 export const metadata: Metadata = {
   title: 'Sandalias para Mujer | Leather Path',
@@ -134,11 +135,13 @@ export default function SandaliasMujerPage() {
                 <div className="bg-white rounded-2xl shadow-leather border border-camel/20 overflow-hidden hover:shadow-leather-lg transition-all duration-300 group-hover:-translate-y-1">
                   {/* Imagen */}
                   <div className="relative aspect-square overflow-hidden">
-                    <ImageWithFallback
-                      src={getProductImageSrc(producto.slug, producto.variants[0]?.name || '')}
+                    <Image
+                      src={getSandaliaImage(producto.slug, toVariantSlug(producto.variants[0]?.name || ''))}
                       alt={`${producto.title} - ${producto.variants[0]?.name || ''}`}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={false}
                     />
                     <Badge className="absolute top-4 left-4 bg-gold text-leather-black font-medium">
                       {producto.badge}

@@ -15,6 +15,7 @@ export const NAV = {
       {
         title: "Líneas",
         links: [
+          { label: "Vaquera", href: "/coleccion/mujer/vaquera" },
           { label: "Casual", href: "/coleccion/mujer/casual", disabled: true },
           { label: "Exótica", href: "/coleccion/mujer/exotica", disabled: true },
           { label: "Rodeo Fashion", href: "/coleccion/mujer/rodeo-fashion", disabled: true }
@@ -30,7 +31,8 @@ export const NAV = {
       }
     ],
     featured: [
-      { label: "Sandalias destacadas", href: "/tienda/mujer/sandalias?destacados=1" }
+      { label: "Sandalias destacadas", href: "/tienda/mujer/sandalias?destacados=1" },
+      { label: "Vaquera destacada", href: "/coleccion/mujer/vaquera?destacados=1" }
     ]
   },
   hombre: {

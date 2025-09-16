@@ -156,6 +156,13 @@ async function main() {
     },
   });
 
+  const vaquera = await prisma.collection.create({
+    data: {
+      slug: 'vaquera',
+      name: 'Vaquera',
+    },
+  });
+
   // Crear productos demo
   const productos = [
     {
@@ -436,6 +443,176 @@ async function main() {
       images: [
         { url: '/mallorca piton natural.png', alt: 'Mallorca Pitón Natural', position: 0 },
         { url: '/malllorca piton.png', alt: 'Mallorca Pitón Coñac', position: 1 },
+      ],
+    },
+    // Línea Vaquera · Damas
+    {
+      title: 'Armonia',
+      subtitle: 'Bota vaquera Armonia con construcción WELT',
+      description: 'Vaquera · Piel res · Construcción WELT · Suela de cuero',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-ARM',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Tabaco', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ARM-TBC' },
+        { option1: 'Única', option2: 'Shedron', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ARM-SHD' },
+      ],
+      images: [
+        { url: '/armonia-tabaco.png', alt: 'Armonia Tabaco', position: 0 },
+        { url: '/armonia-shedron.png', alt: 'Armonia Shedron', position: 1 },
+      ],
+    },
+    {
+      title: 'Adorada',
+      subtitle: 'Bota vaquera Adorada con estoperoles y bordado',
+      description: 'Vaquera · Piel res · Construcción WELT · Tacón de cuero con tapa antiderrapante · Estoperoles y bordado',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-ADR',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Negro', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ADR-NGR' },
+        { option1: 'Única', option2: 'Tan', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ADR-TAN' },
+      ],
+      images: [
+        { url: '/adorada-negro.png', alt: 'Adorada Negro', position: 0 },
+        { url: '/adorada-tan.png', alt: 'Adorada Tan', position: 1 },
+      ],
+    },
+    {
+      title: 'Liberty',
+      subtitle: 'Bota vaquera Liberty con refuerzo en tubos',
+      description: 'Vaquera · Piel res · Construcción WELT · Refuerzo en tubos · Suela de cuero troquelada',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-LIB',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Tabaco', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-LIB-TBC' },
+        { option1: 'Única', option2: 'Negro', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-LIB-NGR' },
+      ],
+      images: [
+        { url: '/liberty-tabaco.png', alt: 'Liberty Tabaco', position: 0 },
+        { url: '/liberty-negro.png', alt: 'Liberty Negro', position: 1 },
+      ],
+    },
+    {
+      title: 'Orgullosa',
+      subtitle: 'Bota vaquera Orgullosa con acabados a mano',
+      description: 'Vaquera · Piel res · Construcción WELT · Acabados a mano',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-ORG',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Tan', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ORG-TAN' },
+        { option1: 'Única', option2: 'Shedron', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-ORG-SHD' },
+      ],
+      images: [
+        { url: '/orgullosa-tan.png', alt: 'Orgullosa Tan', position: 0 },
+        { url: '/orgullosa-shedron.png', alt: 'Orgullosa Shedron', position: 1 },
+      ],
+    },
+    {
+      title: 'Dolly',
+      subtitle: 'Bota vaquera Dolly con diseño de estoperoles',
+      description: 'Vaquera · Piel res · Construcción WELT · Diseño con estoperoles',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-DOL',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Gris', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-DOL-GRS' },
+        { option1: 'Única', option2: 'Miel', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-DOL-MIE' },
+      ],
+      images: [
+        { url: '/dolly-gris.png', alt: 'Dolly Gris', position: 0 },
+        { url: '/dolly-miel.png', alt: 'Dolly Miel', position: 1 },
+      ],
+    },
+    {
+      title: 'Risueña',
+      subtitle: 'Bota vaquera Risueña con diseño floral bordado',
+      description: 'Vaquera · Piel res · Construcción WELT · Diseño floral bordado · Punta rodeo',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-RIS',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Café', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-RIS-CAF' },
+        { option1: 'Única', option2: 'Nogal', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-RIS-NOG' },
+      ],
+      images: [
+        { url: '/risuena-cafe.png', alt: 'Risueña Café', position: 0 },
+        { url: '/risuena-nogal.png', alt: 'Risueña Nogal', position: 1 },
+      ],
+    },
+    {
+      title: 'Palmira',
+      subtitle: 'Bota vaquera Palmira con diseño bordado',
+      description: 'Vaquera · Piel res · Construcción WELT · Diseño bordado',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-PAL',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Glam', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-PAL-GLA' },
+        { option1: 'Única', option2: 'Chocolate', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-PAL-CHC' },
+      ],
+      images: [
+        { url: '/palmira-glam.png', alt: 'Palmira Glam', position: 0 },
+        { url: '/palmira-chocolate.png', alt: 'Palmira Chocolate', position: 1 },
+      ],
+    },
+    {
+      title: 'Santorini',
+      subtitle: 'Bota vaquera Santorini con tubo bordado',
+      description: 'Vaquera · Piel res · Construcción WELT · Tubo bordado en tonos a juego',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-SAN',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Miel', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-SAN-MIE' },
+        { option1: 'Única', option2: 'Negro', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-SAN-NGR' },
+      ],
+      images: [
+        { url: '/santorini-miel.png', alt: 'Santorini Miel', position: 0 },
+        { url: '/santorini-negro.png', alt: 'Santorini Negro', position: 1 },
+      ],
+    },
+    {
+      title: 'Milenia',
+      subtitle: 'Bota vaquera Milenia con construcción WELT',
+      description: 'Vaquera · Piel res · Construcción WELT',
+      gender: 'mujer',
+      material: 'piel res',
+      height: 'bota',
+      sku: 'LP-M-VQ-MIL',
+      categoryIds: [botas.id],
+      collectionIds: [vaquera.id],
+      variants: [
+        { option1: 'Única', option2: 'Miel', priceMXN: 380000, stock: 30, sku: 'LP-M-VQ-MIL-MIE' },
+      ],
+      images: [
+        { url: '/milenia-miel.png', alt: 'Milenia Miel', position: 0 },
       ],
     },
   ];

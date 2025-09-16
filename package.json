@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "tsx scripts/verify-images.ts",
+    "prebuild": "node -r esbuild-register scripts/verify-images.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -62,6 +62,7 @@
     "@types/node": "^20.19.12",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild-register": "^3.6.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "husky": "^9.1.7",

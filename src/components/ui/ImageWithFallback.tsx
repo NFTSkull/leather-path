@@ -30,7 +30,7 @@ export function ImageWithFallback({
   const handleError = () => {
     if (!hasError) {
       console.error('img404', src);
-      setImgSrc('/img/placeholder.png');
+      setImgSrc('/img/placeholder.svg');
       setHasError(true);
     }
   };

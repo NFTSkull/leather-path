@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhook } from '@/lib/payments/stripe';
-import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@prisma/client';
 import { sendOrderEmail } from '@/lib/notifications/email';
 import { sendWhatsApp } from '@/lib/notifications/whatsapp';
 import Stripe from 'stripe';
+
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {

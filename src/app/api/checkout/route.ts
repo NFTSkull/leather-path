@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/payments/stripe';
-import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@prisma/client';
 import { randomBytes } from 'crypto';
+
+const prisma = new PrismaClient();
 
 // Esquema de validación para el request
 const checkoutRequestSchema = z.object({

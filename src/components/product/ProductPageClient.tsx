@@ -30,6 +30,7 @@ type ProductView = {
   badge?: string;
   isSandalia?: boolean; // Nueva propiedad
   heroImage?: string; // Nueva propiedad
+  imageSrc?: string; // Nueva propiedad para imagen principal
   variants: VariantView[];
   images?: Array<{ url?: string }>;
   categories?: any[];
@@ -108,14 +109,14 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <img
-                src={currentVariant?.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
+                src={product.imageSrc}
                 alt={`${productoData.title} - ${currentVariant?.option2 ?? ""}`.trim()}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   if (!el.dataset.fallback) {
                     el.dataset.fallback = "1";
-                    el.src = "/img/placeholder-bota.png"; // subir a public/img/
+                    el.src = "/img/placeholder-bota.png";
                   }
                 }}
               />
@@ -134,7 +135,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                     onClick={() => setSelectedVariantIndex(index)}
                   >
                     <img
-                      src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
+                      src={variant.imageUrl ?? product.imageSrc}
                       alt={`${productoData.title} - ${variant.option2 ?? ""}`.trim()}
                       className="w-full h-full object-cover"
                       onError={(e) => {

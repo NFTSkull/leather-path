@@ -80,7 +80,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 variants: productSafe.variants?.map((v:any)=>({sku:v.sku, option2:v.option2, priceMXN:v.priceMXN})),
                 cats: productSafe.categories?.map((c:any)=>c?.slug ?? c),
                 cols: productSafe.collections?.map((c:any)=>c?.slug ?? c),
-                images0: productSafe.images?.[0] ?? null,
+                images0: productSafe.imageSrc ?? null,
               },
               null,
               2

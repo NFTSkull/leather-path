@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { formatCurrencyMXN } from '@/lib/currency';
+import { clsx } from 'clsx';
 
 interface Variant {
   id: string;
@@ -57,13 +58,16 @@ export function VariantSelector({
                   : 'border-camel bg-white text-leather-black hover:border-espresso'
               }`}
             >
-              {/* IMPORTANTE: que el texto herede el color del botón */}
-              <div className="text-sm font-medium text-current">{variant.option2}</div>
-              <div className="text-xs opacity-75 text-current">{variant.sku}</div>
-              <div className="text-sm font-semibold mt-1 text-current">
+              <div className={clsx("text-sm font-medium", isActive ? "text-white" : "text-leather-black")}>
+                {variant.option2}
+              </div>
+              <div className={clsx("text-xs", isActive ? "text-white" : "text-leather-black/75")}>
+                {variant.sku}
+              </div>
+              <div className={clsx("text-sm font-semibold mt-1", isActive ? "text-white" : "text-leather-black")}>
                 {formatCurrencyMXN(variant.priceMXN)}
               </div>
-              <div className="text-xs opacity-75 text-current">
+              <div className={clsx("text-xs", isActive ? "text-white" : "text-leather-black/75")}>
                 {variant.stock > 0 ? `${variant.stock} disponibles` : 'Agotado'}
               </div>
             </button>

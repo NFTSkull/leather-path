@@ -1,46 +1,41 @@
 import { Footer } from '@/components/layout/Footer';
-import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Star, Truck, Shield, Clock } from 'lucide-react';
 
 const collections = [
   {
     name: 'Piel Exótica',
     description: 'Lujo y exclusividad en cada pieza',
-    bgColor: '0B0B0C',
-    textColor: 'FFFFFF',
+    image: '/img/collection-piel-exotica.png',
     href: '/tienda?collection=piel-exotica',
     badge: 'Exclusivo',
   },
   {
     name: 'Bota Alta',
     description: 'Elegancia y sofisticación',
-    bgColor: '7A5C3E',
-    textColor: 'FFFFFF',
+    image: '/img/collection-bota-alta.png',
     href: '/tienda?collection=bota-alta',
     badge: 'Premium',
   },
   {
     name: 'Botines',
     description: 'Comodidad y estilo',
-    bgColor: 'D0B08C',
-    textColor: '000000',
+    image: '/img/collection-botines.png',
     href: '/tienda?collection=botines',
     badge: 'Casual',
   },
   {
     name: 'Casual',
     description: 'Estilo relajado y moderno',
-    bgColor: '3E2C21',
-    textColor: 'FFFFFF',
+    image: '/img/collection-casual.png',
     href: '/tienda?collection=casual',
     badge: 'Moderno',
   },
   {
     name: 'Rodeo Fashion',
     description: 'Tradición western contemporánea',
-    bgColor: 'D4AF37',
-    textColor: '000000',
+    image: '/img/collection-rodeo-fashion.png',
     href: '/tienda?collection=rodeo-fashion',
     badge: 'Western',
   },
@@ -51,8 +46,7 @@ const featuredProducts = [
     id: '1',
     title: 'Bota Western Becerro',
     price: 250000,
-    bgColor: '7A5C3E',
-    textColor: 'FFFFFF',
+    image: '/img/product-bota-western.png',
     collection: 'Línea Normal',
     href: '/tienda/producto/bota-western-becerro',
   },
@@ -60,8 +54,7 @@ const featuredProducts = [
     id: '2',
     title: 'Bota Alta Avestruz',
     price: 450000,
-    bgColor: '0B0B0C',
-    textColor: 'FFFFFF',
+    image: '/img/product-bota-alta.png',
     collection: 'Piel Exótica',
     href: '/tienda/producto/bota-alta-avestruz',
   },
@@ -69,8 +62,7 @@ const featuredProducts = [
     id: '3',
     title: 'Botín Casual',
     price: 180000,
-    bgColor: 'D0B08C',
-    textColor: '000000',
+    image: '/img/product-botin-casual.png',
     collection: 'Casual',
     href: '/tienda/producto/botin-casual',
   },
@@ -78,8 +70,7 @@ const featuredProducts = [
     id: '4',
     title: 'Cinto Becerro',
     price: 45000,
-    bgColor: 'D0B08C',
-    textColor: '000000',
+    image: '/img/product-cinto-becerro.png',
     collection: 'Línea Normal',
     href: '/tienda/producto/cinto-becerro',
   },
@@ -141,13 +132,13 @@ export default function HomePage() {
             </div>
             <div className="relative">
               <div className="aspect-square bg-saddle rounded-2xl overflow-hidden">
-                <PlaceholderImage
-                  text="Leather Path Hero"
+                <Image
+                  src="/img/hero.png"
+                  alt="Leather Path Hero"
                   width={600}
                   height={600}
-                  bgColor="7A5C3E"
-                  textColor="FFFFFF"
                   className="w-full h-full object-cover"
+                  priority
                 />
               </div>
             </div>
@@ -176,12 +167,11 @@ export default function HomePage() {
               >
                 <div className="relative overflow-hidden rounded-2xl shadow-leather hover:shadow-leather-lg transition-shadow">
                   <div className="aspect-[4/3] bg-saddle">
-                    <PlaceholderImage
-                      text={collection.name}
+                    <Image
+                      src={collection.image}
+                      alt={collection.name}
                       width={400}
                       height={300}
-                      bgColor={collection.bgColor}
-                      textColor={collection.textColor}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
@@ -225,12 +215,11 @@ export default function HomePage() {
                 className="group block bg-white rounded-2xl shadow-leather hover:shadow-leather-lg transition-shadow overflow-hidden"
               >
                 <div className="aspect-square bg-saddle overflow-hidden">
-                  <PlaceholderImage
-                    text={product.title}
+                  <Image
+                    src={product.image}
+                    alt={product.title}
                     width={300}
                     height={300}
-                    bgColor={product.bgColor}
-                    textColor={product.textColor}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>

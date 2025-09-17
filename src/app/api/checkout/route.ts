@@ -14,19 +14,20 @@ function getStripe() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { productId, variantSku, quantity = 1 } = body;
+    const { items, returnUrl } = body;
 
     // Validar payload
-    if (!productId || !variantSku || quantity < 1) {
+    if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
-        { error: 'productId, variantSku y quantity son requeridos' },
+        { error: 'items array es requerido' },
         { status: 400 }
       );
     }
 
-    // Buscar variant en DB
-    const variant = await prisma.variant.findUnique({
-      where: { sku: variantSku },
+    // Buscar todas las variantes en DB
+    const skus = items.map((item: any) => item.sku);
+    const variants = await prisma.variant.findMany({
+      where: { sku: { in: skus } },
       include: {
         product: {
           include: {
@@ -37,19 +38,22 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    if (!variant) {
+    if (variants.length !== items.length) {
       return NextResponse.json(
-        { error: 'Variante no encontrada' },
+        { error: 'Algunas variantes no fueron encontradas' },
         { status: 404 }
       );
     }
 
-    // Verificar stock
-    if (variant.stock < quantity) {
-      return NextResponse.json(
-        { error: 'Stock insuficiente' },
-        { status: 400 }
-      );
+    // Verificar stock para todos los items
+    for (const item of items) {
+      const variant = variants.find(v => v.sku === item.sku);
+      if (!variant || variant.stock < item.quantity) {
+        return NextResponse.json(
+          { error: `Stock insuficiente para ${item.sku}` },
+          { status: 400 }
+        );
+      }
     }
 
     // Crear sesión de Stripe Checkout
@@ -64,30 +68,32 @@ export async function POST(request: NextRequest) {
       },
       allow_promotion_codes: true,
       mode: 'payment',
-      line_items: [
-        {
-          quantity,
+      line_items: items.map((item: any) => {
+        const variant = variants.find(v => v.sku === item.sku);
+        return {
+          quantity: item.quantity,
           price_data: {
             currency: 'mxn',
-            unit_amount: variant.priceMXN, // ya está en centavos
+            unit_amount: item.priceMXN, // ya está en centavos
             product_data: {
-              name: `${variant.product.title} – ${variant.option2}`,
-              description: variant.product.description || '',
+              name: `${item.title} – ${variant?.option2 || ''}`,
+              description: variant?.product?.description || '',
               metadata: {
-                sku: variant.sku,
-                productId: variant.product.id,
-                variantId: variant.id,
+                sku: item.sku,
+                productId: variant?.product?.id || '',
+                variantId: variant?.id || '',
               },
             },
           },
-        },
-      ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/pago/exito?session_id={CHECKOUT_SESSION_ID}`,
+        };
+      }),
+      success_url: returnUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/pago/exito?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/pago/cancelado`,
       metadata: {
-        productId: variant.product.id,
-        variantId: variant.id,
-        quantity: quantity.toString(),
+        items: JSON.stringify(items.map((item: any) => ({
+          sku: item.sku,
+          quantity: item.quantity,
+        }))),
       },
     });
 

@@ -56,13 +56,12 @@ export function ProductPageClient({ product }: { product: ProductView }) {
     if (!currentVariant) return;
     
     addItem({
-      variantId: currentVariant.id,
-      quantity: 1,
       productId: String(product.id || product.slug),
       slug: product.slug,
       title: product.title,
       sku: currentVariant.sku,
       priceMXN: price,
+      quantity: 1,
       imageUrl: currentVariant.imageUrl ?? product.heroImage ?? "/img/placeholder.png",
     });
   };
@@ -121,24 +120,26 @@ export function ProductPageClient({ product }: { product: ProductView }) {
               </Badge>
             </div>
 
-            {/* Miniaturas */}
-            <div className="grid grid-cols-2 gap-4">
-              {productoData.variants.map((variant: any, index: number) => (
-                <div
-                  key={index}
-                  className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
-                  onClick={() => setSelectedVariantIndex(index)}
-                >
-                  <Image
-                    src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
-                    alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                </div>
-              ))}
-            </div>
+            {/* Miniaturas - Solo mostrar si es sandalia */}
+            {product.isSandalia && (
+              <div className="grid grid-cols-2 gap-4">
+                {productoData.variants.map((variant: any, index: number) => (
+                  <div
+                    key={index}
+                    className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
+                    onClick={() => setSelectedVariantIndex(index)}
+                  >
+                    <Image
+                      src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
+                      alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Información del producto */}

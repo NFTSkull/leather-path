@@ -5,8 +5,8 @@ import { CartItem } from '@/lib/validations';
 interface CartStore {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (variantId: string) => void;
-  updateQuantity: (variantId: string, quantity: number) => void;
+  removeItem: (sku: string) => void;
+  setQuantity: (sku: string, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getSubtotal: () => number;
@@ -20,7 +20,7 @@ export const useCartStore = create<CartStore>()(
       addItem: (newItem) => {
         set((state) => {
           const existingItemIndex = state.items.findIndex(
-            item => item.variantId === newItem.variantId
+            item => item.sku === newItem.sku
           );
           
           if (existingItemIndex >= 0) {
@@ -38,21 +38,21 @@ export const useCartStore = create<CartStore>()(
         });
       },
       
-      removeItem: (variantId) => {
+      removeItem: (sku) => {
         set((state) => ({
-          items: state.items.filter(item => item.variantId !== variantId),
+          items: state.items.filter(item => item.sku !== sku),
         }));
       },
       
-      updateQuantity: (variantId, quantity) => {
+      setQuantity: (sku, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(variantId);
+          get().removeItem(sku);
           return;
         }
         
         set((state) => ({
           items: state.items.map(item =>
-            item.variantId === variantId
+            item.sku === sku
               ? { ...item, quantity: Math.min(quantity, 10) }
               : item
           ),
@@ -68,11 +68,8 @@ export const useCartStore = create<CartStore>()(
       },
       
       getSubtotal: () => {
-        // Por ahora retornamos un cálculo básico
-        // En producción esto debería obtener los precios reales de las variantes
         return get().items.reduce((total, item) => {
-          // Precio base de sandalias mujer: $2,650.00 MXN (265000 centavos)
-          return total + (item.quantity * 265000);
+          return total + (item.priceMXN * item.quantity);
         }, 0);
       },
     }),

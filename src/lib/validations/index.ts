@@ -41,14 +41,12 @@ export const imageSchema = z.object({
  * Esquema para el carrito
  */
 export const cartItemSchema = z.object({
-  variantId: z.string().min(1, 'ID de variante requerido'),
+  productId: z.string().min(1, 'ID de producto requerido'),
+  slug: z.string().min(1, 'Slug requerido'),
+  title: z.string().min(1, 'Título requerido'),
+  sku: z.string().min(1, 'SKU requerido'),
+  priceMXN: z.number().min(0, 'Precio debe ser mayor a 0'),
   quantity: z.number().min(1, 'Cantidad mínima es 1').max(10, 'Cantidad máxima es 10'),
-  // Campos adicionales para mostrar en el carrito
-  productId: z.string().optional(),
-  slug: z.string().optional(),
-  title: z.string().optional(),
-  sku: z.string().optional(),
-  priceMXN: z.number().optional(),
   imageUrl: z.string().optional(),
 });
 

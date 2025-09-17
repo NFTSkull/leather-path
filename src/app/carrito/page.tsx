@@ -6,39 +6,44 @@ import { formatCurrencyMXN } from '@/lib/currency';
 import { Trash2, Minus, Plus, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-// Datos mock para los items del carrito
-const cartItems = [
-  {
-    id: '1',
-    variantId: 'variant-1',
-    title: 'Bota Western Becerro',
-    subtitle: 'Clásica bota western en becerro premium',
-    price: 250000,
-    image: 'https://via.placeholder.com/150x150/7A5C3E/FFFFFF?text=Bota+Western',
-    option1: 'Talla 8',
-    option2: 'Café',
-    quantity: 1,
-  },
-  {
-    id: '2',
-    variantId: 'variant-2',
-    title: 'Cinto Becerro',
-    subtitle: 'Cinto de becerro premium',
-    price: 45000,
-    image: 'https://via.placeholder.com/150x150/D0B08C/000000?text=Cinto+Becerro',
-    option1: 'Talla 34',
-    option2: 'Café',
-    quantity: 2,
-  },
-];
-
 export default function CarritoPage() {
-  const { removeItem, updateQuantity } = useCartStore();
+  const { items, removeItem, setQuantity, getSubtotal } = useCartStore();
   
-  const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const subtotal = getSubtotal();
   const shipping = subtotal >= 150000 ? 0 : 15000; // Envío gratis sobre $1,500
-  const tax = subtotal * 0.16; // 16% IVA
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping;
+
+  const onCheckout = async () => {
+    if (items.length === 0) return;
+    
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map(i => ({
+            sku: i.sku,
+            title: i.title,
+            priceMXN: i.priceMXN, // number
+            quantity: i.quantity,
+          })),
+          returnUrl: `${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/tienda/carrito?status=ok`
+        })
+      });
+      
+      if (!res.ok) {
+        console.error('Checkout error:', await res.text());
+        return;
+      }
+      
+      const data = await res.json(); // { url }
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-ivory">
@@ -53,7 +58,7 @@ export default function CarritoPage() {
           </p>
         </div>
 
-        {cartItems.length === 0 ? (
+        {items.length === 0 ? (
           // Carrito vacío
           <div className="text-center py-16">
             <div className="bg-white rounded-2xl shadow-leather p-12 max-w-md mx-auto">
@@ -79,16 +84,16 @@ export default function CarritoPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-leather p-6">
                 <h2 className="text-xl font-heading text-leather-black mb-6">
-                  Productos ({cartItems.length})
+                  Productos ({items.length})
                 </h2>
                 
                 <div className="space-y-6">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-4 p-4 border border-camel rounded-lg">
+                  {items.map((item) => (
+                    <div key={item.sku} className="flex items-center space-x-4 p-4 border border-camel rounded-lg">
                       {/* Imagen */}
                       <div className="flex-shrink-0">
                         <img
-                          src={item.image}
+                          src={item.imageUrl ?? "/img/placeholder.png"}
                           alt={item.title}
                           className="w-20 h-20 object-cover rounded-lg"
                         />
@@ -100,22 +105,14 @@ export default function CarritoPage() {
                           {item.title}
                         </h3>
                         <p className="text-espresso text-sm mb-2">
-                          {item.subtitle}
+                          SKU: {item.sku}
                         </p>
-                        <div className="flex items-center space-x-4 text-sm text-camel">
-                          {item.option1 && (
-                            <span>{item.option1}</span>
-                          )}
-                          {item.option2 && (
-                            <span>{item.option2}</span>
-                          )}
-                        </div>
                       </div>
                       
                       {/* Cantidad */}
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                          onClick={() => setQuantity(item.sku, item.quantity - 1)}
                           className="w-8 h-8 rounded-full border border-camel flex items-center justify-center hover:bg-camel transition-colors"
                         >
                           <Minus className="w-4 h-4 text-espresso" />
@@ -124,7 +121,7 @@ export default function CarritoPage() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                          onClick={() => setQuantity(item.sku, item.quantity + 1)}
                           className="w-8 h-8 rounded-full border border-camel flex items-center justify-center hover:bg-camel transition-colors"
                         >
                           <Plus className="w-4 h-4 text-espresso" />
@@ -134,16 +131,16 @@ export default function CarritoPage() {
                       {/* Precio */}
                       <div className="text-right">
                         <p className="font-medium text-leather-black">
-                          {formatCurrencyMXN(item.price * item.quantity)}
+                          {formatCurrencyMXN(item.priceMXN * item.quantity)}
                         </p>
                         <p className="text-sm text-camel">
-                          {formatCurrencyMXN(item.price)} c/u
+                          {formatCurrencyMXN(item.priceMXN)} c/u
                         </p>
                       </div>
                       
                       {/* Eliminar */}
                       <button
-                        onClick={() => removeItem(item.variantId)}
+                        onClick={() => removeItem(item.sku)}
                         className="text-camel hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -176,10 +173,6 @@ export default function CarritoPage() {
                       )}
                     </span>
                   </div>
-                  <div className="flex justify-between text-espresso">
-                    <span>IVA (16%)</span>
-                    <span>{formatCurrencyMXN(tax)}</span>
-                  </div>
                   <div className="border-t border-camel pt-4">
                     <div className="flex justify-between text-lg font-medium text-leather-black">
                       <span>Total</span>
@@ -201,13 +194,13 @@ export default function CarritoPage() {
                 )}
 
                 {/* Botón de checkout */}
-                <Link
-                  href="/checkout"
+                <button
+                  onClick={onCheckout}
                   className="w-full bg-saddle text-ivory py-4 rounded-lg font-medium hover:bg-espresso transition-colors inline-flex items-center justify-center"
                 >
                   Proceder al Checkout
                   <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
+                </button>
 
                 {/* Enlaces adicionales */}
                 <div className="mt-6 text-center">

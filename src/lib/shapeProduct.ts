@@ -20,10 +20,11 @@ export function shapeProductForPdp(product: any) {
       stock: v.stock,
     };
     
-    // Agregar imageUrl solo para sandalias
+    // Agregar imageUrl SOLO para sandalias
     if (isSandalia && v.option2) {
       (variant as any).imageUrl = `/img/products/sandalias/${product.slug}-${variantSlug(v.option2)}.png`;
     }
+    // Para vaquera (isSandalia === false), NO asignar imageUrl
     
     return variant;
   }) || [];

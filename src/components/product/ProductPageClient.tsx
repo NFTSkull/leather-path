@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React from "react";
+import { type ProductView, type VariantView } from "@/lib/shapeProduct";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -13,29 +14,28 @@ import { VariantSelector } from '@/components/product/VariantSelector';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 
-type VariantView = { 
-  id: string; 
-  sku: string; 
-  option1?: string | null; 
-  option2?: string | null; 
-  priceMXN?: number | null; 
-  stock?: number | null;
-  imageUrl?: string; // Nueva propiedad para imagen de variante
-};
-type ProductView = {
-  id?: string | number;
-  slug: string;
-  title: string;
-  description?: string | null;
-  badge?: string;
-  isSandalia?: boolean; // Nueva propiedad
-  heroImage?: string; // Nueva propiedad
-  imageSrc?: string; // Nueva propiedad para imagen principal
-  variants: VariantView[];
-  images?: Array<{ url?: string }>;
-  categories?: any[];
-  collections?: any[];
-};
+function normalizeVariantSlug(name?: string | null) {
+  return (name ?? "")
+    .normalize("NFD").replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/ñ/g, "n");
+}
+
+function buildImageForVariant(p: ProductView, v?: VariantView) {
+  const vslug = normalizeVariantSlug(v?.option2);
+  const isSandalia = p.categories.includes("sandalias");
+  const isVaquera = p.categories.includes("botas");
+  if (isSandalia) {
+    return `/img/products/sandalias/${p.slug}-${vslug}.png`;
+  }
+  if (isVaquera) {
+    // si no hubiera por variante, el server-side ya manda /vaquera/{slug}.png
+    return vslug ? `/img/products/vaquera/${p.slug}-${vslug}.png`
+                 : `/img/products/vaquera/${p.slug}.png`;
+  }
+  return p.imageSrc ?? "/img/placeholder-bota.png";
+}
 
 export function ProductPageClient({ product }: { product: ProductView }) {
   if (!product || !Array.isArray(product.variants)) {
@@ -43,11 +43,16 @@ export function ProductPageClient({ product }: { product: ProductView }) {
     return <div>Producto inválido.</div>;
   }
   
-  const [selectedVariantIndex, setSelectedVariantIndex] = React.useState(0);
+  const [selectedVariant, setSelectedVariant] = React.useState<VariantView | null>(product.variants?.[0] ?? null);
+  const [heroSrc, setHeroSrc] = React.useState<string>(buildImageForVariant(product, selectedVariant ?? undefined));
   const { addItem } = useCartStore();
+
+  React.useEffect(() => {
+    setHeroSrc(buildImageForVariant(product, selectedVariant ?? undefined));
+  }, [product.slug, product.categories.join(","), selectedVariant?.option2]);
   
   // Obtener variante actual y precio
-  const currentVariant = product.variants[selectedVariantIndex];
+  const currentVariant = selectedVariant;
   const price = typeof currentVariant?.priceMXN === "number" ? currentVariant.priceMXN : 0;
 
   const productoData = product;
@@ -63,7 +68,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
       sku: currentVariant.sku,
       priceMXN: price,
       quantity: 1,
-      imageUrl: currentVariant.imageUrl ?? product.heroImage ?? "/img/placeholder.png",
+      imageUrl: buildImageForVariant(product, currentVariant),
     });
   };
   
@@ -80,8 +85,6 @@ export function ProductPageClient({ product }: { product: ProductView }) {
       </div>
     );
   }
-
-  const [selectedVariant, setSelectedVariant] = React.useState(productoData.variants[0] || {});
 
   return (
     <div className="min-h-screen bg-white">
@@ -109,40 +112,58 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <img
-                src={product.imageSrc}
+                src={heroSrc}
                 alt={`${productoData.title} - ${currentVariant?.option2 ?? ""}`.trim()}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   if (!el.dataset.fallback) {
                     el.dataset.fallback = "1";
-                    el.src = "/img/placeholder-bota.png";
+                    // para sandalia intentamos también sin variante
+                    const isSandalia = product.categories.includes("sandalias");
+                    const isVaquera = product.categories.includes("botas");
+                    if (isSandalia) {
+                      el.src = `/img/products/sandalias/${product.slug}.png`;
+                    } else if (isVaquera) {
+                      el.src = `/img/products/vaquera/${product.slug}.png`;
+                    } else {
+                      el.src = "/img/placeholder-bota.png";
+                    }
                   }
                 }}
               />
               <Badge className="absolute top-4 left-4 bg-gold text-leather-black font-medium">
-                {productoData.badge}
+                {product.categories.includes("sandalias") ? "Ladies" : 
+                 product.categories.includes("botas") ? "Vaquera" : "LeatherPath"}
               </Badge>
             </div>
 
             {/* Miniaturas - Solo mostrar si es sandalia */}
-            {product.isSandalia && (
+            {product.categories.includes("sandalias") && (
               <div className="grid grid-cols-2 gap-4">
                 {productoData.variants.map((variant: any, index: number) => (
                   <div
                     key={index}
                     className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
-                    onClick={() => setSelectedVariantIndex(index)}
+                    onClick={() => setSelectedVariant(variant)}
                   >
                     <img
-                      src={variant.imageUrl ?? product.imageSrc}
+                      src={buildImageForVariant(product, variant)}
                       alt={`${productoData.title} - ${variant.option2 ?? ""}`.trim()}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const el = e.currentTarget as HTMLImageElement;
                         if (!el.dataset.fallback) {
                           el.dataset.fallback = "1";
-                          el.src = "/img/placeholder-bota.png";
+                          const isSandalia = product.categories.includes("sandalias");
+                          const isVaquera = product.categories.includes("botas");
+                          if (isSandalia) {
+                            el.src = `/img/products/sandalias/${product.slug}.png`;
+                          } else if (isVaquera) {
+                            el.src = `/img/products/vaquera/${product.slug}.png`;
+                          } else {
+                            el.src = "/img/placeholder-bota.png";
+                          }
                         }
                       }}
                     />
@@ -183,15 +204,12 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             </div>
 
             {/* Selector de variantes */}
-            <VariantSelector
-              productId={String(productoData.id || productoData.slug)}
-              variants={productoData.variants as any}
-              selectedVariant={currentVariant as any}
-              onVariantChange={(variant) => {
-                const index = productoData.variants.findIndex(v => v.id === variant.id);
-                if (index >= 0) setSelectedVariantIndex(index);
-              }}
-            />
+                <VariantSelector
+                  productId={String(productoData.id || productoData.slug)}
+                  variants={productoData.variants as any}
+                  selectedVariant={currentVariant as any}
+                  onVariantChange={(variant) => setSelectedVariant(variant)}
+                />
 
             {/* Botones de acción */}
             <div className="space-y-4">

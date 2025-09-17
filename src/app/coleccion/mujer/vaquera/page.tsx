@@ -196,7 +196,7 @@ export default function VaqueraMujerPage() {
                       src={getVaqMujerImage(producto.slug, toVariantSlug(producto.variants[0]?.name || ''))}
                       alt={`${producto.title} - ${producto.variants[0]?.name || ''}`}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain bg-white group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, 50vw"
                       priority={false}
                     />

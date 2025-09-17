@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -6,6 +9,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const rawWanted = url.searchParams.get("raw");
   const allowRaw = process.env.DEBUG_PDP === "1";
   const { slug } = await params;
+
+  if (!slug) {
+    return NextResponse.json({ ok: false, reason: "missing-slug" }, { status: 400 });
+  }
 
   try {
     const raw = await prisma.product.findFirst({

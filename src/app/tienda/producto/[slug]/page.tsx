@@ -31,43 +31,44 @@ function getProductImageSrc(product: any, option2?: string | null) {
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  const product = await prisma.product.findFirst({
-    where: { slug: { equals: slug, mode: "insensitive" }, status: "published" },
-    include: {
-      variants: true,
-      images: true,
-      categories: { include: { category: true } },     // 👈 many-to-many
-      collections: { include: { collection: true } },  // 👈 por consistencia
-    },
-  });
-  if (!product) notFound();
-
-  const variants = product.variants ?? [];
-  const initialVariant = variants[0] ?? null;
-  const selectedName = initialVariant?.option2 ?? "";
-  const imgSrc = getProductImageSrc(product, selectedName);
-
-  // Diagnóstico: loggear datos si DEBUG_PDP=1
-  if (process.env.DEBUG_PDP === "1") {
-    console.error("PDP_TRACE", {
-      slug: product.slug,
-      title: product.title,
-      status: product.status,
-      cats: product.categories?.map((c: any) => c?.category?.slug ?? c),
-      colls: product.collections?.map((c: any) => c?.collection?.slug ?? c),
-      variants: product.variants?.map((v: any) => ({ 
-        sku: v.sku, 
-        option2: v.option2, 
-        priceMXN: v.priceMXN,
-        stock: v.stock 
-      })),
-      images0: product.images?.[0],
-      imgSrc: imgSrc,
-      selectedName: selectedName,
+  try {
+    const product = await prisma.product.findFirst({
+      where: { slug: { equals: slug, mode: "insensitive" }, status: "published" },
+      include: {
+        variants: true,
+        images: true,
+        categories: { include: { category: true } },     // 👈 many-to-many
+        collections: { include: { collection: true } },  // 👈 por consistencia
+      },
     });
-  }
+    if (!product) notFound();
 
-  return (
+    const variants = product.variants ?? [];
+    const initialVariant = variants[0] ?? null;
+    const selectedName = initialVariant?.option2 ?? "";
+    const imgSrc = getProductImageSrc(product, selectedName);
+
+    // Diagnóstico: loggear datos si DEBUG_PDP=1
+    if (process.env.DEBUG_PDP === "1") {
+      console.error("PDP_TRACE", {
+        slug: product.slug,
+        title: product.title,
+        status: product.status,
+        cats: product.categories?.map((c: any) => c?.category?.slug ?? c),
+        colls: product.collections?.map((c: any) => c?.collection?.slug ?? c),
+        variants: product.variants?.map((v: any) => ({ 
+          sku: v.sku, 
+          option2: v.option2, 
+          priceMXN: v.priceMXN,
+          stock: v.stock 
+        })),
+        images0: product.images?.[0],
+        imgSrc: imgSrc,
+        selectedName: selectedName,
+      });
+    }
+
+    return (
     <div className="container mx-auto grid md:grid-cols-2 gap-8 py-10">
       <div>
         <Image 
@@ -114,5 +115,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (e: any) {
+    console.error("PDP_SSR_ERROR", { slug, err: String(e), stack: (e as any)?.stack });
+    notFound();
+  }
 }

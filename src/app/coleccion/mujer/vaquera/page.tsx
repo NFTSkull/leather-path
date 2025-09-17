@@ -18,7 +18,7 @@ const botasVaquera = [
     title: 'Armonia',
     slug: 'armonia',
     subtitle: 'Bota vaquera Armonia con construcción WELT',
-    price: 380000, // en centavos
+    price: 355000, // $3,550.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Suela de cuero',
     variants: [
@@ -31,7 +31,7 @@ const botasVaquera = [
     title: 'Adorada',
     slug: 'adorada',
     subtitle: 'Bota vaquera Adorada con estoperoles y bordado',
-    price: 380000,
+    price: 355000, // $3,550.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Tacón de cuero con tapa antiderrapante · Estoperoles y bordado',
     variants: [
@@ -44,7 +44,7 @@ const botasVaquera = [
     title: 'Liberty',
     slug: 'liberty',
     subtitle: 'Bota vaquera Liberty con refuerzo en tubos',
-    price: 380000,
+    price: 365000, // $3,650.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Refuerzo en tubos · Suela de cuero troquelada',
     variants: [
@@ -57,7 +57,7 @@ const botasVaquera = [
     title: 'Orgullosa',
     slug: 'orgullosa',
     subtitle: 'Bota vaquera Orgullosa con acabados a mano',
-    price: 380000,
+    price: 370000, // $3,700.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Acabados a mano',
     variants: [
@@ -70,7 +70,7 @@ const botasVaquera = [
     title: 'Dolly',
     slug: 'dolly',
     subtitle: 'Bota vaquera Dolly con diseño de estoperoles',
-    price: 380000,
+    price: 390000, // $3,900.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Diseño con estoperoles',
     variants: [
@@ -83,7 +83,7 @@ const botasVaquera = [
     title: 'Risueña',
     slug: 'risuena',
     subtitle: 'Bota vaquera Risueña con diseño floral bordado',
-    price: 380000,
+    price: 390000, // $3,900.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Diseño floral bordado · Punta rodeo',
     variants: [
@@ -96,7 +96,7 @@ const botasVaquera = [
     title: 'Palmira',
     slug: 'palmira',
     subtitle: 'Bota vaquera Palmira con diseño bordado',
-    price: 380000,
+    price: 360000, // $3,600.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Diseño bordado',
     variants: [
@@ -109,7 +109,7 @@ const botasVaquera = [
     title: 'Santorini',
     slug: 'santorini',
     subtitle: 'Bota vaquera Santorini con tubo bordado',
-    price: 380000,
+    price: 355000, // $3,550.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT · Tubo bordado en tonos a juego',
     variants: [
@@ -122,7 +122,7 @@ const botasVaquera = [
     title: 'Milenia',
     slug: 'milenia',
     subtitle: 'Bota vaquera Milenia con construcción WELT',
-    price: 380000,
+    price: 360000, // $3,600.00
     badge: 'Vaquera',
     details: 'Vaquera · Piel res · Construcción WELT',
     variants: [

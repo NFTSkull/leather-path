@@ -43,6 +43,13 @@ export const imageSchema = z.object({
 export const cartItemSchema = z.object({
   variantId: z.string().min(1, 'ID de variante requerido'),
   quantity: z.number().min(1, 'Cantidad mínima es 1').max(10, 'Cantidad máxima es 10'),
+  // Campos adicionales para mostrar en el carrito
+  productId: z.string().optional(),
+  slug: z.string().optional(),
+  title: z.string().optional(),
+  sku: z.string().optional(),
+  priceMXN: z.number().optional(),
+  imageUrl: z.string().optional(),
 });
 
 /**

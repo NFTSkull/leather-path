@@ -11,14 +11,25 @@ import { toVariantSlug } from '@/lib/slugify';
 import { getProductBySlug } from '@/lib/products-mock';
 import { VariantSelector } from '@/components/product/VariantSelector';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
+import { useCartStore } from '@/lib/store';
 
-type VariantView = { id: string; sku: string; option1?: string | null; option2?: string | null; priceMXN?: number | null; stock?: number | null };
+type VariantView = { 
+  id: string; 
+  sku: string; 
+  option1?: string | null; 
+  option2?: string | null; 
+  priceMXN?: number | null; 
+  stock?: number | null;
+  imageUrl?: string; // Nueva propiedad para imagen de variante
+};
 type ProductView = {
   id?: string | number;
   slug: string;
   title: string;
   description?: string | null;
   badge?: string;
+  isSandalia?: boolean; // Nueva propiedad
+  heroImage?: string; // Nueva propiedad
   variants: VariantView[];
   images?: Array<{ url?: string }>;
   categories?: any[];
@@ -31,14 +42,30 @@ export function ProductPageClient({ product }: { product: ProductView }) {
     return <div>Producto inválido.</div>;
   }
   
-  // Normaliza por si llegara como string
-  const v0 = product.variants[0];
-  const price =
-    typeof v0?.priceMXN === "number" ? v0.priceMXN :
-    typeof (v0 as any)?.priceMXN === "string" ? Number((v0 as any).priceMXN) :
-    0;
+  const [selectedVariantIndex, setSelectedVariantIndex] = React.useState(0);
+  const { addItem } = useCartStore();
+  
+  // Obtener variante actual y precio
+  const currentVariant = product.variants[selectedVariantIndex];
+  const price = typeof currentVariant?.priceMXN === "number" ? currentVariant.priceMXN : 0;
 
   const productoData = product;
+  
+  // Handler para agregar al carrito
+  const onAddToCart = () => {
+    if (!currentVariant) return;
+    
+    addItem({
+      variantId: currentVariant.id,
+      quantity: 1,
+      productId: String(product.id || product.slug),
+      slug: product.slug,
+      title: product.title,
+      sku: currentVariant.sku,
+      priceMXN: price,
+      imageUrl: currentVariant.imageUrl ?? product.heroImage ?? "/img/placeholder.png",
+    });
+  };
   
   if (!productoData) {
     return (
@@ -82,8 +109,8 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <Image
-                src={getSandaliaImage(productoData.slug, toVariantSlug(selectedVariant.option2 || selectedVariant.option1 || ''))}
-                alt={`${productoData.title} - ${selectedVariant.option2 || selectedVariant.option1 || ''}`}
+                src={currentVariant?.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
+                alt={`${productoData.title} - ${currentVariant?.option2 || currentVariant?.option1 || ''}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -100,10 +127,10 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                 <div
                   key={index}
                   className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
-                  onClick={() => setSelectedVariant(variant)}
+                  onClick={() => setSelectedVariantIndex(index)}
                 >
                   <Image
-                    src={getSandaliaImage(productoData.slug, toVariantSlug(variant.option2 || variant.option1 || ''))}
+                    src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
                     alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
                     fill
                     className="object-cover"
@@ -130,7 +157,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   ))}
                   <span className="ml-2 text-sm text-espresso">(4.8)</span>
                 </div>
-                <span className="text-sm text-camel">SKU: {productoData.variants[0]?.sku || 'N/A'}</span>
+                <span className="text-sm text-camel">SKU: {currentVariant?.sku || 'N/A'}</span>
               </div>
             </div>
 
@@ -148,8 +175,11 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             <VariantSelector
               productId={String(productoData.id || productoData.slug)}
               variants={productoData.variants as any}
-              selectedVariant={selectedVariant as any}
-              onVariantChange={setSelectedVariant}
+              selectedVariant={currentVariant as any}
+              onVariantChange={(variant) => {
+                const index = productoData.variants.findIndex(v => v.id === variant.id);
+                if (index >= 0) setSelectedVariantIndex(index);
+              }}
             />
 
             {/* Botones de acción */}
@@ -160,7 +190,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   className="flex-1 bg-saddle hover:bg-espresso text-white"
                   onClick={() => {
                     // TODO: Implementar "Comprar ahora" - crear sesión Stripe
-                    console.log('Comprar ahora:', selectedVariant);
+                    console.log('Comprar ahora:', currentVariant);
                   }}
                 >
                   Comprar Ahora - {formatCurrencyMXN(price)}
@@ -169,10 +199,8 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   size="lg"
                   variant="outline"
                   className="flex-1 border-saddle text-saddle hover:bg-saddle hover:text-white"
-                  onClick={() => {
-                    // TODO: Implementar agregar al carrito
-                    console.log('Agregar al carrito:', selectedVariant);
-                  }}
+                  onClick={onAddToCart}
+                  disabled={!currentVariant || (typeof currentVariant.stock === "number" && currentVariant.stock <= 0)}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Agregar al Carrito

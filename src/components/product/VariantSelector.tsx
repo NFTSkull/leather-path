@@ -45,6 +45,7 @@ export function VariantSelector({
         {variants.map((variant) => (
           <button
             key={variant.id}
+            type="button"
             onClick={() => handleVariantChange(variant)}
             className={`p-3 rounded-lg border-2 transition-colors ${
               currentVariant?.id === variant.id

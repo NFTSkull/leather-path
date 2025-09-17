@@ -107,13 +107,17 @@ export function ProductPageClient({ product }: { product: ProductView }) {
           <div className="space-y-4">
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
-              <Image
+              <img
                 src={currentVariant?.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
                 alt={`${productoData.title} - ${currentVariant?.option2 || currentVariant?.option1 || ''}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const el = e.currentTarget as HTMLImageElement;
+                  if (!el.dataset.fallback) {
+                    el.dataset.fallback = "1";
+                    el.src = "/img/products/mujer/vaquera/placeholder.png"; // fallback específico para vaquera
+                  }
+                }}
               />
               <Badge className="absolute top-4 left-4 bg-gold text-leather-black font-medium">
                 {productoData.badge}
@@ -129,12 +133,17 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                     className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
                     onClick={() => setSelectedVariantIndex(index)}
                   >
-                    <Image
+                    <img
                       src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
                       alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        if (!el.dataset.fallback) {
+                          el.dataset.fallback = "1";
+                          el.src = "/img/products/mujer/vaquera/placeholder.png";
+                        }
+                      }}
                     />
                   </div>
                 ))}

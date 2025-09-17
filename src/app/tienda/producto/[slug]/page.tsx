@@ -24,11 +24,23 @@ function isSandalia(product: any) {
   return product?.categories?.some((c: any) => c?.category?.slug === "sandalias") ?? false;
 }
 
-function getProductImageSrc(product: any, option2?: string | null) {
-  if (isSandalia(product) && option2) {
-    return `/img/products/sandalias/${product.slug}-${variantSlug(option2)}.png`;
+function isVaquera(product: any) {
+  const cats = product?.categories ?? [];
+  // en DB guardamos "botas" para vaquera dama
+  return cats.some((c: any) => c?.category?.slug === "botas");
+}
+
+function getProductImageSrc(p: any, variantName?: string) {
+  if (isSandalia(p)) {
+    const v = (variantName ?? p?.variants?.[0]?.option2) as string | undefined;
+    const vs = variantSlug(v ?? "");
+    return `/img/products/sandalias/${p.slug}-${vs}.png`;
   }
-  return product?.images?.[0]?.url ?? "/img/placeholder.png";
+  // Vaquera Damas: intentamos imagen por slug y, si no existe, placeholder de bota
+  // (esto evita que aparezca Hawaii si falta la imagen)
+  const vaqueraPath = `/img/products/mujer/vaquera/${p.slug}.png`;
+  // Pasamos siempre la ruta y el <img> tendrá onError en el client para caer al placeholder
+  return vaqueraPath;
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {

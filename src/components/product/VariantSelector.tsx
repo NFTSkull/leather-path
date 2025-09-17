@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { formatCurrencyMXN } from '@/lib/currency';
 import { clsx } from 'clsx';
+import { twMerge } from "tailwind-merge";
 
 interface Variant {
   id: string;
@@ -52,11 +53,14 @@ export function VariantSelector({
               aria-pressed={isActive}
               data-selected={isActive ? "1" : "0"}
               onClick={() => handleVariantChange(variant)}
-              className={`p-3 rounded-lg border-2 transition-colors ${
-                isActive
-                  ? 'border-leather-black bg-leather-black text-white'
-                  : 'border-camel bg-white text-leather-black hover:border-espresso'
-              }`}
+              className={twMerge(
+                clsx(
+                  "p-3 rounded-lg border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-espresso",
+                  isActive
+                    ? "border-leather-black bg-leather-black text-white"
+                    : "border-camel bg-white text-leather-black hover:border-espresso"
+                )
+              )}
             >
               <div className={clsx("text-sm font-medium", isActive ? "text-white" : "text-leather-black")}>
                 {variant.option2}

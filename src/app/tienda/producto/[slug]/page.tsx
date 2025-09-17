@@ -7,6 +7,9 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { VariantSelector } from "@/components/product/VariantSelector";
 import { formatCurrencyMXN } from "@/lib/currency";
+import { headers } from "next/headers";
+import { shapeProductForPdp } from "@/lib/shapeProduct";
+import { ProductPageClient } from "@/components/product/ProductPageClient";
 
 function variantSlug(name: string) {
   return (name ?? "")
@@ -41,83 +44,53 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         collections: { include: { collection: true } },  // 👈 por consistencia
       },
     });
-    if (!product) notFound();
-
-    const variants = product.variants ?? [];
-    const initialVariant = variants[0] ?? null;
-    const selectedName = initialVariant?.option2 ?? "";
-    const imgSrc = getProductImageSrc(product, selectedName);
-
-    // Diagnóstico: loggear datos si DEBUG_PDP=1
-    if (process.env.DEBUG_PDP === "1") {
-      console.error("PDP_TRACE", {
-        slug: product.slug,
-        title: product.title,
-        status: product.status,
-        cats: product.categories?.map((c: any) => c?.category?.slug ?? c),
-        colls: product.collections?.map((c: any) => c?.collection?.slug ?? c),
-        variants: product.variants?.map((v: any) => ({ 
-          sku: v.sku, 
-          option2: v.option2, 
-          priceMXN: v.priceMXN,
-          stock: v.stock 
-        })),
-        images0: product.images?.[0],
-        imgSrc: imgSrc,
-        selectedName: selectedName,
-      });
+    if (!product) {
+      console.error("PDP_NOT_FOUND", { slug });
+      return notFound();
     }
 
-    return (
-    <div className="container mx-auto grid md:grid-cols-2 gap-8 py-10">
-      <div>
-        <Image 
-          src={imgSrc} 
-          alt={`${product.title} ${selectedName}`.trim()} 
-          width={1200} 
-          height={1200} 
-          className="rounded-lg"
-        />
-      </div>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-semibold text-leather-black">{product.title}</h1>
-          {initialVariant?.sku && (
-            <p className="text-sm text-espresso mt-2">SKU: {initialVariant.sku}</p>
-          )}
-          <p className="text-2xl font-bold text-leather-black mt-4">
-            {formatCurrencyMXN(initialVariant?.priceMXN || 0)}
-          </p>
-        </div>
-        
-        <div>
-          <p className="text-lg text-espresso">{product.description ?? "Producto LeatherPath"}</p>
-        </div>
-        
-        <VariantSelector 
-          key={product.id}
-          productId={product.id}
-          variants={variants}
-          selectedVariant={initialVariant}
-          onVariantChange={(variant) => {
-            // Actualizar imagen y precio dinámicamente
-            const newImgSrc = getProductImageSrc(product, variant.option2);
-            // TODO: Implementar actualización de estado
-          }}
-        />
-        
-        <div className="flex gap-4">
-          <button 
-            className="bg-leather-black text-white px-8 py-3 rounded-lg font-medium hover:bg-espresso transition-colors"
-          >
-            Comprar ahora
-          </button>
-        </div>
-      </div>
-    </div>
-    );
+    const productSafe = shapeProductForPdp(product);
+
+    // --- MODO VISTA SERVIDOR: NO MONTAR CLIENT COMPONENT ---
+    const h = await headers();
+    const url = h.get("x-invoke-path") || ""; // fallback
+    const qs = h.get("x-next-url") || "";     // en Next, no siempre está; por eso también:
+    const sv =
+      (typeof qs === "string" && qs.includes("__sv=1")) ||
+      (typeof url === "string" && url.includes("__sv=1"));
+
+    if (sv) {
+      // Render mínimo 100% Server Component (sin ProductPageClient)
+      return (
+        <main className="p-6">
+          <h1 className="text-2xl font-bold">{productSafe.title}</h1>
+          <p className="mt-2 text-sm opacity-80">Slug: {productSafe.slug}</p>
+          <pre className="mt-4 text-xs whitespace-pre-wrap">
+            {JSON.stringify(
+              {
+                variants: productSafe.variants?.map((v:any)=>({sku:v.sku, option2:v.option2, priceMXN:v.priceMXN})),
+                cats: productSafe.categories?.map((c:any)=>c?.slug ?? c),
+                cols: productSafe.collections?.map((c:any)=>c?.slug ?? c),
+                images0: productSafe.images?.[0] ?? null,
+              },
+              null,
+              2
+            )}
+          </pre>
+        </main>
+      );
+    }
+
+    // --- MODO NORMAL: montamos el client component ---
+    console.error("PDP_PASSING_TO_CLIENT", {
+      slug: productSafe.slug,
+      keys: Object.keys(productSafe || {}),
+      variantsShape: productSafe.variants?.map((v:any)=>({sku:v.sku, option2:v.option2, priceMXN: typeof v.priceMXN })),
+    });
+
+    return <ProductPageClient key={productSafe.id ?? productSafe.slug} product={productSafe} />;
   } catch (e: any) {
     console.error("PDP_SSR_ERROR", { slug, err: String(e), stack: (e as any)?.stack });
-    notFound();
+    throw e; // deja que el error boundary capture y muestre digest/stack
   }
 }

@@ -114,7 +114,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
               <img
                 src={heroSrc}
                 alt={`${productoData.title} - ${currentVariant?.option2 ?? ""}`.trim()}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain bg-white"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   if (!el.dataset.fallback) {
@@ -150,7 +150,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                     <img
                       src={buildImageForVariant(product, variant)}
                       alt={`${productoData.title} - ${variant.option2 ?? ""}`.trim()}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-white"
                       onError={(e) => {
                         const el = e.currentTarget as HTMLImageElement;
                         if (!el.dataset.fallback) {

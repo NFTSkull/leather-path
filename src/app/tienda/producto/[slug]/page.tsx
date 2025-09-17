@@ -36,11 +36,8 @@ function getProductImageSrc(p: any, variantName?: string) {
     const vs = variantSlug(v ?? "");
     return `/img/products/sandalias/${p.slug}-${vs}.png`;
   }
-  // Vaquera Damas: intentamos imagen por slug y, si no existe, placeholder de bota
-  // (esto evita que aparezca Hawaii si falta la imagen)
-  const vaqueraPath = `/img/products/mujer/vaquera/${p.slug}.png`;
-  // Pasamos siempre la ruta y el <img> tendrá onError en el client para caer al placeholder
-  return vaqueraPath;
+  // VAQUERA: intentamos imagen por slug; el <img> hará onError → placeholder de bota
+  return `/img/products/vaquera/${p.slug}.png`;
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {

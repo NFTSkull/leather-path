@@ -53,7 +53,7 @@ export function VariantSelector({
               onClick={() => handleVariantChange(variant)}
               className={`p-3 rounded-lg border-2 transition-colors ${
                 isActive
-                  ? 'border-leather-black bg-leather-black text-ivory'
+                  ? 'border-leather-black bg-leather-black text-white'
                   : 'border-camel bg-white text-leather-black hover:border-espresso'
               }`}
             >

@@ -109,13 +109,13 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <img
                 src={currentVariant?.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
-                alt={`${productoData.title} - ${currentVariant?.option2 || currentVariant?.option1 || ''}`}
+                alt={`${productoData.title} - ${currentVariant?.option2 ?? ""}`.trim()}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const el = e.currentTarget as HTMLImageElement;
                   if (!el.dataset.fallback) {
                     el.dataset.fallback = "1";
-                    el.src = "/img/products/mujer/vaquera/placeholder.png"; // fallback específico para vaquera
+                    el.src = "/img/placeholder-bota.png"; // subir a public/img/
                   }
                 }}
               />
@@ -135,13 +135,13 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   >
                     <img
                       src={variant.imageUrl ?? product.heroImage ?? "/img/placeholder.png"}
-                      alt={`${productoData.title} - ${variant.option2 || variant.option1 || ''}`}
+                      alt={`${productoData.title} - ${variant.option2 ?? ""}`.trim()}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const el = e.currentTarget as HTMLImageElement;
                         if (!el.dataset.fallback) {
                           el.dataset.fallback = "1";
-                          el.src = "/img/products/mujer/vaquera/placeholder.png";
+                          el.src = "/img/placeholder-bota.png";
                         }
                       }}
                     />

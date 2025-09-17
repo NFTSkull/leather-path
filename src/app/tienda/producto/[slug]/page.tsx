@@ -47,6 +47,26 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const selectedName = initialVariant?.option2 ?? "";
   const imgSrc = getProductImageSrc(product, selectedName);
 
+  // Diagnóstico: loggear datos si DEBUG_PDP=1
+  if (process.env.DEBUG_PDP === "1") {
+    console.error("PDP_TRACE", {
+      slug: product.slug,
+      title: product.title,
+      status: product.status,
+      cats: product.categories?.map((c: any) => c?.category?.slug ?? c),
+      colls: product.collections?.map((c: any) => c?.collection?.slug ?? c),
+      variants: product.variants?.map((v: any) => ({ 
+        sku: v.sku, 
+        option2: v.option2, 
+        priceMXN: v.priceMXN,
+        stock: v.stock 
+      })),
+      images0: product.images?.[0],
+      imgSrc: imgSrc,
+      selectedName: selectedName,
+    });
+  }
+
   return (
     <div className="container mx-auto grid md:grid-cols-2 gap-8 py-10">
       <div>

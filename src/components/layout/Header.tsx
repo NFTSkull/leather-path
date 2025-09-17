@@ -15,14 +15,14 @@ export function Header() {
   return (
     <header className="bg-white shadow-leather-lg border-b border-camel/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6">
+        <div className="flex justify-between items-center py-4 lg:py-6">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-saddle to-espresso rounded-lg flex items-center justify-center shadow-leather">
-                <Star className="w-5 h-5 text-gold" />
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-saddle to-espresso rounded-lg flex items-center justify-center shadow-leather">
+                <Star className="w-4 h-4 lg:w-5 lg:h-5 text-gold" />
               </div>
-              <span className="text-2xl font-display text-leather-black group-hover:text-saddle transition-colors">
+              <span className="text-lg lg:text-2xl font-display text-leather-black group-hover:text-saddle transition-colors">
                 Leather Path
               </span>
             </Link>
@@ -207,7 +207,7 @@ export function Header() {
           </nav>
 
           {/* Acciones */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-3 lg:space-x-6">
             {/* Buscador */}
             <div className="hidden md:flex items-center">
               <div className="relative">
@@ -222,10 +222,10 @@ export function Header() {
 
             {/* Carrito */}
             <Link href="/carrito" className="relative group">
-              <div className="p-2 rounded-lg group-hover:bg-camel/10 transition-colors">
-                <ShoppingCart className="w-6 h-6 text-leather-black group-hover:text-saddle transition-colors" />
+              <div className="p-1.5 lg:p-2 rounded-lg group-hover:bg-camel/10 transition-colors">
+                <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6 text-leather-black group-hover:text-saddle transition-colors" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-gold text-leather-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-leather">
+                  <span className="absolute -top-1 -right-1 bg-gold text-leather-black text-xs rounded-full w-4 h-4 lg:w-5 lg:h-5 flex items-center justify-center font-bold shadow-leather">
                     {totalItems}
                   </span>
                 )}
@@ -234,20 +234,20 @@ export function Header() {
 
             {/* Cuenta */}
             <Link href="/cuenta" className="group">
-              <div className="p-2 rounded-lg group-hover:bg-camel/10 transition-colors">
-                <User className="w-6 h-6 text-leather-black group-hover:text-saddle transition-colors" />
+              <div className="p-1.5 lg:p-2 rounded-lg group-hover:bg-camel/10 transition-colors">
+                <User className="w-5 h-5 lg:w-6 lg:h-6 text-leather-black group-hover:text-saddle transition-colors" />
               </div>
             </Link>
 
             {/* Menú móvil */}
             <button
-              className="lg:hidden p-2 rounded-lg hover:bg-camel/10 transition-colors"
+              className="lg:hidden p-1.5 lg:p-2 rounded-lg hover:bg-camel/10 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6 text-leather-black" />
+                <X className="w-5 h-5 lg:w-6 lg:h-6 text-leather-black" />
               ) : (
-                <Menu className="w-6 h-6 text-leather-black" />
+                <Menu className="w-5 h-5 lg:w-6 lg:h-6 text-leather-black" />
               )}
             </button>
           </div>
@@ -257,22 +257,22 @@ export function Header() {
       {/* Menú móvil */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-camel/20 shadow-leather">
-          <div className="px-4 py-6 space-y-6">
+          <div className="px-4 py-4 space-y-4">
             {/* Mujer móvil */}
             <div>
               <Link
                 href={NAV.mujer.href}
-                className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10"
+                className="block text-base font-medium text-leather-black py-2 border-b border-camel/10"
               >
                 {NAV.mujer.label}
               </Link>
-              <div className="ml-4 mt-3 space-y-3">
+              <div className="ml-4 mt-2 space-y-2">
                 {NAV.mujer.columns.map((column) => (
                   <div key={column.title}>
-                    <span className="block text-espresso font-medium py-2">
+                    <span className="block text-espresso font-medium py-1">
                       {column.title}
                     </span>
-                    <div className="ml-4 space-y-2">
+                    <div className="ml-4 space-y-1">
                       {column.links.map((link) => (
                         <div key={link.label}>
                           {link.disabled ? (
@@ -304,17 +304,17 @@ export function Header() {
             <div>
               <Link
                 href={NAV.hombre.href}
-                className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10"
+                className="block text-base font-medium text-leather-black py-2 border-b border-camel/10"
               >
                 {NAV.hombre.label}
               </Link>
-              <div className="ml-4 mt-3 space-y-3">
+              <div className="ml-4 mt-2 space-y-2">
                 {NAV.hombre.columns.map((column) => (
                   <div key={column.title}>
-                    <span className="block text-espresso font-medium py-2">
+                    <span className="block text-espresso font-medium py-1">
                       {column.title}
                     </span>
-                    <div className="ml-4 space-y-2">
+                    <div className="ml-4 space-y-1">
                       {column.links.map((link) => (
                         <span
                           key={link.label}
@@ -331,13 +331,13 @@ export function Header() {
 
             {/* Colecciones móviles */}
             <div>
-              <span className="block text-lg font-medium text-leather-black py-3 border-b border-camel/10">
+              <span className="block text-base font-medium text-leather-black py-2 border-b border-camel/10">
                 Colecciones
               </span>
-              <div className="ml-4 mt-3 space-y-2">
+              <div className="ml-4 mt-2 space-y-1">
                 <Link
                   href="/tienda/mujer/sandalias"
-                  className="block text-saddle font-medium py-2"
+                  className="block text-saddle font-medium py-1"
                 >
                   <div className="flex items-center justify-between">
                     <span>Ladies</span>
@@ -369,13 +369,13 @@ export function Header() {
             </div>
 
             {/* Buscador móvil */}
-            <div className="pt-6 border-t border-camel/20">
+            <div className="pt-4 border-t border-camel/20">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-espresso w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Buscar productos..."
-                  className="w-full pl-10 pr-4 py-3 border border-camel/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-saddle/50 focus:border-saddle bg-camel/5"
+                  className="w-full pl-10 pr-4 py-2 border border-camel/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-saddle/50 focus:border-saddle bg-camel/5"
                 />
               </div>
             </div>

@@ -25,3 +25,4 @@ export function asset(path: string): string {
 export function productImageAsset(slug: string, variantSlug: string): string {
   return asset(`/img/products/sandalias/${slug}-${variantSlug}.png`);
 }
+

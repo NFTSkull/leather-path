@@ -31,3 +31,4 @@ STRIPE_WEBHOOK_SECRET=whsec_Pswc00SZIT99YsZ7JNUOlSNcwuJoSwEx
 - **Sandalias Mujer**: https://leather-path.vercel.app/tienda/mujer/sandalias
 - **Producto Individual**: https://leather-path.vercel.app/tienda/producto/hawaii
 - **Webhook**: https://leather-path.vercel.app/api/stripe/webhook
+

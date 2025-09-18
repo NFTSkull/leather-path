@@ -13,7 +13,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:studio": "prisma studio",
     "seed:sandalias": "ts-node --transpile-only scripts/seed-sandalias-mujer.ts",
-    "seed:vaquera": "ts-node --transpile-only scripts/seed-vaquera-mujer.ts"
+    "seed:vaquera": "ts-node --transpile-only scripts/seed-vaquera-mujer.ts",
+    "seed:bota:alta:mujer": "tsx scripts/seed-bota-alta-mujer.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

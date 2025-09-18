@@ -210,3 +210,4 @@ export const sandaliasProducts = {
 export function getProductBySlug(slug: string) {
   return sandaliasProducts[slug as keyof typeof sandaliasProducts] || null;
 }
+

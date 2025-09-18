@@ -46,3 +46,4 @@ NEXT_PUBLIC_BASE_PATH="/tienda"
 NEXT_PUBLIC_ASSETS_BASE="https://cdn.leatherpath.mx"
 ```
 - Las imágenes se sirven desde: `https://cdn.leatherpath.mx/img/products/sandalias/`
+

@@ -46,3 +46,4 @@ echo ""
 echo "⚙️  Configuración recomendada en .env:"
 echo "   NEXT_PUBLIC_ASSETS_BASE=\"\""
 echo "   NEXT_PUBLIC_SITE_URL=\"https://TU-DOMINIO\""
+

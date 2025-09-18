@@ -67,3 +67,4 @@ export function hasVaqMujerImage(slug: string, variant: string): boolean {
   const key = `${slug}-${variant}`.toLowerCase();
   return key in VQ_MUJER_IMAGES;
 }
+

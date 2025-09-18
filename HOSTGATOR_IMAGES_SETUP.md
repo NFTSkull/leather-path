@@ -133,3 +133,4 @@ https://cdn.leatherpath.mx/img/products/sandalias/hawaii-piton-rojo.png
 1. Mover app a `/tienda`
 2. Cambiar `NEXT_PUBLIC_BASE_PATH="/tienda"`
 3. ¡Listo! URLs se ajustan automáticamente
+

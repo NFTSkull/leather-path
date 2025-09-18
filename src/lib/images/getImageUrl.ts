@@ -28,3 +28,4 @@ export function getProductImageAlt(productTitle: string, variantName?: string): 
   const variant = variantName ? ` – ${variantName}` : '';
   return `${productTitle}${variant}`.trim();
 }
+

@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
 import { prisma } from '@/lib/prisma';
+import { getBotaAltaImage } from '@/lib/image-manifest-bota-alta';
+import { toVariantSlug } from '@/lib/slugify';
 
 export const metadata: Metadata = {
   title: 'Bota Alta · Damas | Leather Path',
@@ -99,7 +101,7 @@ export default async function BotaAltaMujerPage() {
                   {/* Imagen */}
                   <div className="relative aspect-square overflow-hidden">
                     <Image
-                      src={producto.images?.[0]?.url ?? "/img/placeholder.png"}
+                      src={getBotaAltaImage(producto.slug, toVariantSlug(producto.variants[0]?.option2 || ''))}
                       alt={`${producto.title} - ${producto.variants[0]?.option2 || ''}`}
                       fill
                       className="object-contain bg-white group-hover:scale-105 transition-transform duration-300"
@@ -145,7 +147,7 @@ export default async function BotaAltaMujerPage() {
                     {/* Precio */}
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-leather-black">
-                        {formatCurrencyMXN(producto.variants[0]?.priceMXN || 0)}
+                        {formatCurrencyMXN((producto.variants[0]?.priceMXN || 0) * 100)}
                       </span>
                       <span className="text-sm text-espresso">
                         Desde

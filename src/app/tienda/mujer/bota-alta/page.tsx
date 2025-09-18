@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
 import { prisma } from '@/lib/prisma';
-import { getBotaAltaImage } from '@/lib/image-manifest-bota-alta';
-import { toVariantSlug } from '@/lib/slugify';
+import { resolveProductImageSrc } from '@/lib/productImage';
 
 export const metadata: Metadata = {
   title: 'Bota Alta · Damas | Leather Path',
@@ -94,15 +93,19 @@ export default async function BotaAltaMujerPage() {
 
         {/* Grid de productos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {productos.map((producto) => (
+          {productos.map((producto) => {
+            const defaultVariant = producto.variants?.[0] ?? null;
+            const imgSrc = resolveProductImageSrc(producto, defaultVariant?.option2 ?? undefined);
+            
+            return (
             <div key={producto.id} className="group">
               <Link href={`/tienda/producto/${producto.slug}`}>
                 <div className="bg-white rounded-2xl shadow-leather border border-camel/20 overflow-hidden hover:shadow-leather-lg transition-all duration-300 group-hover:-translate-y-1">
                   {/* Imagen */}
                   <div className="relative aspect-square overflow-hidden">
                     <Image
-                      src={getBotaAltaImage(producto.slug, toVariantSlug(producto.variants[0]?.option2 || ''))}
-                      alt={`${producto.title} - ${producto.variants[0]?.option2 || ''}`}
+                      src={imgSrc}
+                      alt={`${producto.title} - ${defaultVariant?.option2 ?? ""}`}
                       fill
                       className="object-contain bg-white group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -157,7 +160,8 @@ export default async function BotaAltaMujerPage() {
                 </div>
               </Link>
             </div>
-          ))}
+          );
+          })}
         </div>
 
         {/* Mensaje si no hay productos */}

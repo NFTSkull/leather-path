@@ -30,11 +30,21 @@ function isVaquera(product: any) {
   return cats.some((c: any) => c?.category?.slug === "botas");
 }
 
+function isCategory(product: any, slug: string) {
+  return (product?.categories ?? [])
+    .some((c: any) => c?.category?.slug === slug);
+}
+
 function getProductImageSrc(p: any, variantName?: string) {
   if (isSandalia(p)) {
     const v = (variantName ?? p?.variants?.[0]?.option2) as string | undefined;
     const vs = variantSlug(v ?? "");
     return `/img/products/sandalias/${p.slug}-${vs}.png`;
+  }
+  if (isCategory(p, "bota-alta")) {
+    const v = (variantName ?? p?.variants?.[0]?.option2) as string | undefined;
+    const vs = variantSlug(v ?? "");
+    return `/img/products/bota-alta/${p.slug}-${vs}.png`;
   }
   // VAQUERA: intentamos imagen por slug; el <img> hará onError → placeholder de bota
   return `/img/products/vaquera/${p.slug}.png`;

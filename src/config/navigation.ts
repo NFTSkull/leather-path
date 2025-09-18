@@ -9,7 +9,7 @@ export const NAV = {
           { label: "Sandalias", href: "/tienda/mujer/sandalias" },
           { label: "Botines", href: "/tienda/mujer/botines", disabled: true },
           { label: "Botas", href: "/tienda/mujer/botas", disabled: true },
-          { label: "Bota Alta", href: "/tienda/mujer/bota-alta", disabled: true }
+          { label: "Bota Alta", href: "/tienda/mujer/bota-alta" }
         ]
       },
       {

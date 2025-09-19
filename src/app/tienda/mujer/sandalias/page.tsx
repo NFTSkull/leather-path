@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { formatCurrencyMXN } from '@/lib/currency';
+import { formatMXN } from '@/lib/price';
 import { getSandaliaImage } from '@/lib/image-manifest-sandalias';
 import { toVariantSlug } from '@/lib/slugify';
 
@@ -182,7 +182,7 @@ export default function SandaliasMujerPage() {
                     {/* Precio */}
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-leather-black">
-                        {formatCurrencyMXN(producto.price)}
+                        {formatMXN(producto.price)}
                       </span>
                       <span className="text-sm text-espresso">
                         Desde

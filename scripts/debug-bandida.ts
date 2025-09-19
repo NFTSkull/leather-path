@@ -22,7 +22,7 @@ async function main() {
   console.log("");
 
   bandida.variants.forEach(v => {
-    const variantSlugResult = variantSlug(v.option2);
+    const variantSlugResult = variantSlug(v.option2 ?? undefined);
     const expectedImagePath = `/img/products/bota-alta/${bandida.slug}-${variantSlugResult}.png`;
     
     console.log(`🎨 Variante: ${v.option2}`);

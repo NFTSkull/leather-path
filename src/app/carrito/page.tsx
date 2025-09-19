@@ -26,6 +26,7 @@ export default function CarritoPage() {
             title: i.title,
             priceMXN: i.priceMXN, // number
             quantity: i.quantity,
+            size: i.size, // Incluir talla
           })),
           returnUrl: `${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/tienda/carrito?status=ok`
         })
@@ -107,6 +108,11 @@ export default function CarritoPage() {
                         <p className="text-espresso text-sm mb-2">
                           SKU: {item.sku}
                         </p>
+                        {item.size && (
+                          <p className="text-sm text-leather-black/80">
+                            Talla: {item.size}
+                          </p>
+                        )}
                       </div>
                       
                       {/* Cantidad */}

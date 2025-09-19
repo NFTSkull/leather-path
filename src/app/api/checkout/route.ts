@@ -24,6 +24,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validar que todos los items tengan talla
+    for (const item of items) {
+      if (!item.size || typeof item.size !== 'string') {
+        return NextResponse.json(
+          { error: 'Falta talla (size) en uno o más productos' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Buscar todas las variantes en DB
     const skus = items.map((item: any) => item.sku);
     const variants = await prisma.variant.findMany({
@@ -76,12 +86,13 @@ export async function POST(request: NextRequest) {
             currency: 'mxn',
             unit_amount: item.priceMXN * 100, // convertir pesos a centavos para Stripe
             product_data: {
-              name: `${item.title} – ${variant?.option2 || ''}`,
+              name: `${item.title} – ${variant?.option2 || ''} – Talla ${item.size}`,
               description: variant?.product?.description || '',
               metadata: {
                 sku: item.sku,
                 productId: variant?.product?.id || '',
                 variantId: variant?.id || '',
+                size: item.size, // Nueva propiedad para la talla
               },
             },
           },
@@ -93,6 +104,7 @@ export async function POST(request: NextRequest) {
         items: JSON.stringify(items.map((item: any) => ({
           sku: item.sku,
           quantity: item.quantity,
+          size: item.size, // Incluir talla en metadata
         }))),
       },
     });

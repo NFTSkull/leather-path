@@ -48,6 +48,7 @@ export const cartItemSchema = z.object({
   priceMXN: z.number().min(0, 'Precio debe ser mayor a 0'),
   quantity: z.number().min(1, 'Cantidad mínima es 1').max(10, 'Cantidad máxima es 10'),
   imageUrl: z.string().optional(),
+  size: z.string().optional(), // Nueva propiedad para la talla
 });
 
 /**

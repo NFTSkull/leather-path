@@ -15,6 +15,7 @@ import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import { resolveProductImagePrimary, fallbackByModel, placeholderBota } from "@/lib/productImage";
 import { variantSlug } from "@/lib/slugifyVariant";
+import SizeSelector from "@/components/product/SizeSelector";
 
 function normalizeVariantSlug(name?: string | null) {
   return (name ?? "")
@@ -31,6 +32,7 @@ function buildImageForVariant(p: ProductView, v?: VariantView) {
 
 export function ProductPageClient({ product }: { product: ProductView }) {
   const [selectedVariant, setSelectedVariant] = React.useState<VariantView | null>(product?.variants?.[0] ?? null);
+  const [selectedSize, setSelectedSize] = React.useState<string | null>(null);
   const [heroSrc, setHeroSrc] = React.useState<string>(resolveProductImagePrimary(product, selectedVariant?.option2 ?? undefined));
   const { addItem } = useCartStore();
 
@@ -51,7 +53,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
   
   // Handler para agregar al carrito
   const onAddToCart = () => {
-    if (!currentVariant) return;
+    if (!currentVariant || !selectedSize) return;
     
     addItem({
       productId: String(product.id || product.slug),
@@ -61,6 +63,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
       priceMXN: price,
       quantity: 1,
       imageUrl: buildImageForVariant(product, currentVariant),
+      size: selectedSize, // Nueva propiedad para la talla
     });
   };
   
@@ -211,15 +214,27 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   onVariantChange={(variant) => setSelectedVariant(variant)}
                 />
 
+            {/* Selector de talla */}
+            <SizeSelector
+              value={selectedSize}
+              onChange={setSelectedSize}
+              disabled={false}
+            />
+
             {/* Botones de acción */}
             <div className="space-y-4">
               <div className="flex space-x-4">
                 <Button
                   size="lg"
                   className="flex-1 bg-saddle hover:bg-espresso text-white"
+                  disabled={!selectedSize}
                   onClick={() => {
+                    if (!selectedSize) {
+                      alert("Selecciona tu talla antes de continuar.");
+                      return;
+                    }
                     // TODO: Implementar "Comprar ahora" - crear sesión Stripe
-                    console.log('Comprar ahora:', currentVariant);
+                    console.log('Comprar ahora:', currentVariant, 'Talla:', selectedSize);
                   }}
                 >
                   Comprar Ahora - {formatCurrencyMXN(price)}
@@ -229,7 +244,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   variant="outline"
                   className="flex-1 border-saddle text-saddle hover:bg-saddle hover:text-white"
                   onClick={onAddToCart}
-                  disabled={!currentVariant || (typeof currentVariant.stock === "number" && currentVariant.stock <= 0)}
+                  disabled={!currentVariant || !selectedSize || (typeof currentVariant.stock === "number" && currentVariant.stock <= 0)}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Agregar al Carrito

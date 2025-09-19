@@ -17,7 +17,7 @@ export const NAV = {
         links: [
           { label: "Vaquera", href: "/coleccion/mujer/vaquera" },
           { label: "Casual", href: "/coleccion/mujer/casual", disabled: true },
-          { label: "Exótica", href: "/coleccion/mujer/exotica", disabled: true },
+          { label: "Exótica", href: "/tienda/mujer/exotica" },
           { label: "Rodeo Fashion", href: "/coleccion/mujer/rodeo-fashion", disabled: true }
         ]
       },

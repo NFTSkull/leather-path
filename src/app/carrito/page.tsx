@@ -10,7 +10,7 @@ export default function CarritoPage() {
   const { items, removeItem, setQuantity, getSubtotal } = useCartStore();
   
   const subtotal = getSubtotal();
-  const shipping = subtotal >= 150000 ? 0 : 15000; // Envío gratis sobre $1,500
+  const shipping = 0; // Envío gratis temporalmente
   const total = subtotal + shipping;
 
   const onCheckout = async () => {
@@ -181,17 +181,12 @@ export default function CarritoPage() {
                   </div>
                 </div>
 
-                {/* Promoción de envío gratis */}
-                {shipping > 0 && (
-                  <div className="bg-gold/10 border border-gold/20 rounded-lg p-4 mb-6">
-                    <p className="text-sm text-espresso">
-                      <span className="font-medium text-gold">
-                        ¡Agrega ${formatCurrencyMXN(150000 - subtotal)} más
-                      </span>{' '}
-                      para obtener envío gratis
-                    </p>
-                  </div>
-                )}
+                {/* Envío gratis */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-green-700">
+                    <span className="font-medium">🚚 Envío gratis</span> en todos los pedidos
+                  </p>
+                </div>
 
                 {/* Botón de checkout */}
                 <button

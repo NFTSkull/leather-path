@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
           quantity: item.quantity,
           price_data: {
             currency: 'mxn',
-            unit_amount: item.priceMXN, // ya está en centavos
+            unit_amount: item.priceMXN * 100, // convertir pesos a centavos para Stripe
             product_data: {
               name: `${item.title} – ${variant?.option2 || ''}`,
               description: variant?.product?.description || '',

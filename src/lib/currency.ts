@@ -1,17 +1,16 @@
 /**
  * Formatea un número como moneda mexicana (MXN)
- * @param amount - Cantidad en centavos
+ * @param amount - Cantidad en pesos (enteros)
  * @returns String formateado como moneda mexicana
  */
 export function formatCurrencyMXN(amount: number): string {
-  const pesos = amount / 100;
-  
+  // Los precios ya están en pesos enteros, no necesitamos dividir por 100
   return new Intl.NumberFormat('es-MX', {
     style: 'currency',
     currency: 'MXN',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(pesos);
+  }).format(amount);
 }
 
 /**

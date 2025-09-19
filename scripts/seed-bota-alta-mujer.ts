@@ -110,8 +110,8 @@ const PRODUCTS = [
     ],
   },
   {
-    slug: "forajida",
-    title: "Forajida",
+    slug: "forjida",
+    title: "Forjida",
     description: DESC,
     gender: "mujer" as const,
     categorySlug: "bota-alta",

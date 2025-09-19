@@ -1,4 +1,5 @@
 import { prisma } from "../db-client";
+import { assertPesos } from "../../src/lib/price";
 
 type VariantInput = { 
   option2: string; // color/nombre variante
@@ -71,18 +72,21 @@ export async function upsertProduct(p: ProductInput) {
   }
 
   for (const v of p.variants) {
+    // Validar precio antes de escribir
+    const validatedPrice = assertPesos(v.priceMXN);
+    
     await prisma.variant.upsert({
       where: { sku: v.sku },
       update: {
         option2: v.option2, // color/nombre variante
-        priceMXN: v.priceMXN,
+        priceMXN: validatedPrice,
         stock: v.stock ?? 30,
         productId: base.id,
       },
       create: {
         option2: v.option2, // color/nombre variante
         sku: v.sku,
-        priceMXN: v.priceMXN,
+        priceMXN: validatedPrice,
         stock: v.stock ?? 30,
         productId: base.id,
       },

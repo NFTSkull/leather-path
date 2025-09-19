@@ -16,7 +16,9 @@
     "seed:vaquera": "ts-node --transpile-only scripts/seed-vaquera-mujer.ts",
     "seed:bota:alta:mujer": "tsx scripts/seed-bota-alta-mujer.ts",
     "audit:bota-alta": "tsx scripts/audit-images-bota-alta.ts",
-    "update:prices:bota-alta": "tsx scripts/update-bota-alta-prices.ts"
+    "update:prices:bota-alta": "tsx scripts/update-bota-alta-prices.ts",
+    "check:bota-alta": "tsx scripts/check-prices-bota-alta.ts",
+    "fix:prices:bota-alta": "tsx scripts/fix-prices-bota-alta.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

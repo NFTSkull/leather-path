@@ -1,12 +1,12 @@
 import { variantSlug } from "./slugifyVariant";
 
 // Función para detectar categorías - compatible con ProductView.categories (array de strings)
-function isCat(prod: any, slug: string) {
+function isCat(prod: { categories?: string[] }, slug: string) {
   const categories = prod?.categories ?? [];
   return categories.includes(slug);
 }
 
-export function resolveProductImagePrimary(product: any, variantName?: string) {
+export function resolveProductImagePrimary(product: { slug?: string; categories?: string[]; imageSrc?: string; images?: { url?: string }[] }, variantName?: string) {
   const slug = product?.slug;
   const vslug = variantSlug(variantName);
 
@@ -30,7 +30,7 @@ export function resolveProductImagePrimary(product: any, variantName?: string) {
   return product?.imageSrc ?? product?.images?.[0]?.url ?? "/img/placeholder.png";
 }
 
-export function fallbackByModel(product: any) {
+export function fallbackByModel(product: { slug?: string; categories?: string[] }) {
   if (isCat(product, "bota-alta")) {
     return `/img/products/bota-alta/${product?.slug}.png`;
   }

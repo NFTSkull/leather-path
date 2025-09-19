@@ -30,18 +30,18 @@ function buildImageForVariant(p: ProductView, v?: VariantView) {
 }
 
 export function ProductPageClient({ product }: { product: ProductView }) {
-  if (!product || !Array.isArray(product.variants)) {
-    console.error("PDP_CLIENT_BAD_PROPS", { productType: typeof product });
-    return <div>Producto inválido.</div>;
-  }
-  
-  const [selectedVariant, setSelectedVariant] = React.useState<VariantView | null>(product.variants?.[0] ?? null);
+  const [selectedVariant, setSelectedVariant] = React.useState<VariantView | null>(product?.variants?.[0] ?? null);
   const [heroSrc, setHeroSrc] = React.useState<string>(resolveProductImagePrimary(product, selectedVariant?.option2 ?? undefined));
   const { addItem } = useCartStore();
 
   React.useEffect(() => {
     setHeroSrc(resolveProductImagePrimary(product, selectedVariant?.option2 ?? undefined));
-  }, [product.slug, product.categories.join(","), selectedVariant?.option2]);
+  }, [product?.slug, product?.categories?.join(","), selectedVariant?.option2]);
+
+  if (!product || !Array.isArray(product.variants)) {
+    console.error("PDP_CLIENT_BAD_PROPS", { productType: typeof product });
+    return <div>Producto inválido.</div>;
+  }
   
   // Obtener variante actual y precio
   const currentVariant = selectedVariant;
@@ -149,7 +149,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Miniaturas - Mostrar para sandalias y bota alta */}
             {(product.categories.includes("sandalias") || product.categories.includes("bota-alta")) && (
               <div className="grid grid-cols-2 gap-4">
-                {productoData.variants.map((variant: any, index: number) => (
+                {productoData.variants.map((variant: VariantView, index: number) => (
                   <div
                     key={index}
                     className="relative aspect-square overflow-hidden rounded-lg border border-camel/20 cursor-pointer hover:border-saddle transition-colors"
@@ -206,8 +206,8 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Selector de variantes */}
                 <VariantSelector
                   productId={String(productoData.id || productoData.slug)}
-                  variants={productoData.variants as any}
-                  selectedVariant={currentVariant as any}
+                  variants={productoData.variants}
+                  selectedVariant={currentVariant}
                   onVariantChange={(variant) => setSelectedVariant(variant)}
                 />
 
@@ -255,16 +255,16 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                   Características
                 </h3>
                 <ul className="space-y-2">
-                  {productoData.categories?.map((cat: any, index: number) => (
+                  {productoData.categories?.map((cat: string, index: number) => (
                     <li key={index} className="flex items-start space-x-2 text-espresso">
                       <span className="text-saddle mt-1">•</span>
-                      <span>Categoría: {cat.name || cat.slug}</span>
+                      <span>Categoría: {cat}</span>
                     </li>
                   ))}
-                  {productoData.collections?.map((col: any, index: number) => (
+                  {productoData.collections?.map((col: string, index: number) => (
                     <li key={index} className="flex items-start space-x-2 text-espresso">
                       <span className="text-saddle mt-1">•</span>
-                      <span>Colección: {col.name || col.slug}</span>
+                      <span>Colección: {col}</span>
                     </li>
                   ))}
                 </ul>

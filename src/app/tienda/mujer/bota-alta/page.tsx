@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
 import { prisma } from '@/lib/prisma';
-import { resolveProductImageSrc } from '@/lib/productImage';
+import { resolveProductImagePrimary } from '@/lib/productImage';
 
 export const metadata: Metadata = {
   title: 'Bota Alta · Damas | Leather Path',
@@ -95,7 +95,7 @@ export default async function BotaAltaMujerPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {productos.map((producto) => {
             const defaultVariant = producto.variants?.[0] ?? null;
-            const imgSrc = resolveProductImageSrc(producto, defaultVariant?.option2 ?? undefined);
+            const imgSrc = resolveProductImagePrimary(producto, defaultVariant?.option2 ?? undefined);
             
             return (
             <div key={producto.id} className="group">

@@ -13,6 +13,8 @@ import { getProductBySlug } from '@/lib/products-mock';
 import { VariantSelector } from '@/components/product/VariantSelector';
 import { ShoppingCart, Heart, Share2, Star } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
+import { resolveProductImagePrimary, fallbackByModel, placeholderBota } from "@/lib/productImage";
+import { variantSlug } from "@/lib/slugifyVariant";
 
 function normalizeVariantSlug(name?: string | null) {
   return (name ?? "")
@@ -23,18 +25,8 @@ function normalizeVariantSlug(name?: string | null) {
 }
 
 function buildImageForVariant(p: ProductView, v?: VariantView) {
-  const vslug = normalizeVariantSlug(v?.option2);
-  const isSandalia = p.categories.includes("sandalias");
-  const isVaquera = p.categories.includes("botas");
-  if (isSandalia) {
-    return `/img/products/sandalias/${p.slug}-${vslug}.png`;
-  }
-  if (isVaquera) {
-    // si no hubiera por variante, el server-side ya manda /vaquera/{slug}.png
-    return vslug ? `/img/products/vaquera/${p.slug}-${vslug}.png`
-                 : `/img/products/vaquera/${p.slug}.png`;
-  }
-  return p.imageSrc ?? "/img/placeholder-bota.png";
+  // Usar la nueva función unificada
+  return resolveProductImagePrimary(p, v?.option2 ?? undefined);
 }
 
 export function ProductPageClient({ product }: { product: ProductView }) {
@@ -44,11 +36,11 @@ export function ProductPageClient({ product }: { product: ProductView }) {
   }
   
   const [selectedVariant, setSelectedVariant] = React.useState<VariantView | null>(product.variants?.[0] ?? null);
-  const [heroSrc, setHeroSrc] = React.useState<string>(buildImageForVariant(product, selectedVariant ?? undefined));
+  const [heroSrc, setHeroSrc] = React.useState<string>(resolveProductImagePrimary(product, selectedVariant?.option2 ?? undefined));
   const { addItem } = useCartStore();
 
   React.useEffect(() => {
-    setHeroSrc(buildImageForVariant(product, selectedVariant ?? undefined));
+    setHeroSrc(resolveProductImagePrimary(product, selectedVariant?.option2 ?? undefined));
   }, [product.slug, product.categories.join(","), selectedVariant?.option2]);
   
   // Obtener variante actual y precio
@@ -99,10 +91,30 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             Mujer
           </Link>
           <span>/</span>
-          <Link href="/tienda/mujer/sandalias" className="hover:text-saddle transition-colors">
-            Sandalias
-          </Link>
-          <span>/</span>
+          {product.categories.includes("sandalias") && (
+            <>
+              <Link href="/tienda/mujer/sandalias" className="hover:text-saddle transition-colors">
+                Sandalias
+              </Link>
+              <span>/</span>
+            </>
+          )}
+          {product.categories.includes("bota-alta") && (
+            <>
+              <Link href="/tienda/mujer/bota-alta" className="hover:text-saddle transition-colors">
+                Bota Alta
+              </Link>
+              <span>/</span>
+            </>
+          )}
+          {product.categories.includes("botas") && (
+            <>
+              <Link href="/tienda/mujer/vaquera" className="hover:text-saddle transition-colors">
+                Vaquera
+              </Link>
+              <span>/</span>
+            </>
+          )}
           <span className="text-leather-black">{productoData.title}</span>
         </nav>
 
@@ -112,34 +124,30 @@ export function ProductPageClient({ product }: { product: ProductView }) {
             {/* Imagen principal */}
             <div className="relative aspect-square overflow-hidden rounded-2xl border border-camel/20">
               <img
+                key={`${product.slug}-${variantSlug(currentVariant?.option2 ?? undefined)}`}
                 src={heroSrc}
                 alt={`${productoData.title} - ${currentVariant?.option2 ?? ""}`.trim()}
                 className="w-full h-full object-contain bg-white"
                 onError={(e) => {
-                  const el = e.currentTarget as HTMLImageElement;
-                  if (!el.dataset.fallback) {
-                    el.dataset.fallback = "1";
-                    // para sandalia intentamos también sin variante
-                    const isSandalia = product.categories.includes("sandalias");
-                    const isVaquera = product.categories.includes("botas");
-                    if (isSandalia) {
-                      el.src = `/img/products/sandalias/${product.slug}.png`;
-                    } else if (isVaquera) {
-                      el.src = `/img/products/vaquera/${product.slug}.png`;
-                    } else {
-                      el.src = "/img/placeholder-bota.png";
-                    }
-                  }
+                  const img = e.currentTarget as HTMLImageElement;
+                  const byModel = fallbackByModel(product);
+
+                  // 1) si falló variante → intenta modelo
+                  if (img.src.includes(heroSrc)) { img.src = byModel; return; }
+
+                  // 2) si falló modelo → placeholder
+                  if (img.src.includes(byModel)) { img.src = placeholderBota; return; }
                 }}
               />
               <Badge className="absolute top-4 left-4 bg-gold text-leather-black font-medium">
-                {product.categories.includes("sandalias") ? "Ladies" : 
+                {product.categories.includes("sandalias") ? "Sandalias" : 
+                 product.categories.includes("bota-alta") ? "Bota Alta" :
                  product.categories.includes("botas") ? "Vaquera" : "LeatherPath"}
               </Badge>
             </div>
 
-            {/* Miniaturas - Solo mostrar si es sandalia */}
-            {product.categories.includes("sandalias") && (
+            {/* Miniaturas - Mostrar para sandalias y bota alta */}
+            {(product.categories.includes("sandalias") || product.categories.includes("bota-alta")) && (
               <div className="grid grid-cols-2 gap-4">
                 {productoData.variants.map((variant: any, index: number) => (
                   <div
@@ -155,15 +163,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                         const el = e.currentTarget as HTMLImageElement;
                         if (!el.dataset.fallback) {
                           el.dataset.fallback = "1";
-                          const isSandalia = product.categories.includes("sandalias");
-                          const isVaquera = product.categories.includes("botas");
-                          if (isSandalia) {
-                            el.src = `/img/products/sandalias/${product.slug}.png`;
-                          } else if (isVaquera) {
-                            el.src = `/img/products/vaquera/${product.slug}.png`;
-                          } else {
-                            el.src = "/img/placeholder-bota.png";
-                          }
+                          el.src = fallbackByModel(product);
                         }
                       }}
                     />

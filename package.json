@@ -14,7 +14,8 @@
     "db:studio": "prisma studio",
     "seed:sandalias": "ts-node --transpile-only scripts/seed-sandalias-mujer.ts",
     "seed:vaquera": "ts-node --transpile-only scripts/seed-vaquera-mujer.ts",
-    "seed:bota:alta:mujer": "tsx scripts/seed-bota-alta-mujer.ts"
+    "seed:bota:alta:mujer": "tsx scripts/seed-bota-alta-mujer.ts",
+    "audit:bota-alta": "tsx scripts/audit-images-bota-alta.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

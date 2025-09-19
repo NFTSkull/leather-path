@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import Stripe from 'stripe';
+import { pesosToCents } from '@/lib/price';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -80,11 +81,12 @@ export async function POST(request: NextRequest) {
       mode: 'payment',
       line_items: items.map((item: any) => {
         const variant = variants.find(v => v.sku === item.sku);
+        const unitAmount = pesosToCents(Number(item.priceMXN)); // normaliza y pasa a centavos
         return {
           quantity: item.quantity,
           price_data: {
             currency: 'mxn',
-            unit_amount: item.priceMXN * 100, // convertir pesos a centavos para Stripe
+            unit_amount: unitAmount,
             product_data: {
               name: `${item.title} – ${variant?.option2 || ''} – Talla ${item.size}`,
               description: variant?.product?.description || '',

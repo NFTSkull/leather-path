@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { formatCurrencyMXN } from '@/lib/currency';
+import { formatMXN } from '@/lib/price';
 import { clsx } from 'clsx';
 import { twMerge } from "tailwind-merge";
 
@@ -69,7 +69,7 @@ export function VariantSelector({
                 {variant.sku}
               </div>
               <div className={clsx("text-sm font-semibold mt-1", isActive ? "text-white" : "text-leather-black")}>
-                {formatCurrencyMXN(variant.priceMXN)}
+                {formatMXN(variant.priceMXN)}
               </div>
               <div className={clsx("text-xs", isActive ? "text-white" : "text-leather-black/75")}>
                 {variant.stock > 0 ? `${variant.stock} disponibles` : 'Agotado'}
@@ -90,7 +90,7 @@ export function VariantSelector({
             </div>
             <div className="text-right">
               <p className="text-lg font-bold text-leather-black">
-                {formatCurrencyMXN(currentVariant.priceMXN)}
+                {formatMXN(currentVariant.priceMXN)}
               </p>
               <p className="text-sm text-espresso">
                 {currentVariant.stock > 0 ? `${currentVariant.stock} disponibles` : 'Agotado'}

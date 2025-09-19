@@ -2,7 +2,7 @@
 
 import { Footer } from '@/components/layout/Footer';
 import { useCartStore } from '@/lib/store';
-import { formatCurrencyMXN } from '@/lib/currency';
+import { formatMXN } from '@/lib/price';
 import { Trash2, Minus, Plus, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -137,10 +137,10 @@ export default function CarritoPage() {
                       {/* Precio */}
                       <div className="text-right">
                         <p className="font-medium text-leather-black">
-                          {formatCurrencyMXN(item.priceMXN * item.quantity)}
+                          {formatMXN(item.priceMXN * item.quantity)}
                         </p>
                         <p className="text-sm text-camel">
-                          {formatCurrencyMXN(item.priceMXN)} c/u
+                          {formatMXN(item.priceMXN)} c/u
                         </p>
                       </div>
                       
@@ -167,7 +167,7 @@ export default function CarritoPage() {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-espresso">
                     <span>Subtotal</span>
-                    <span>{formatCurrencyMXN(subtotal)}</span>
+                    <span>{formatMXN(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-espresso">
                     <span>Envío</span>
@@ -175,14 +175,14 @@ export default function CarritoPage() {
                       {shipping === 0 ? (
                         <span className="text-green-600 font-medium">Gratis</span>
                       ) : (
-                        formatCurrencyMXN(shipping)
+                        formatMXN(shipping)
                       )}
                     </span>
                   </div>
                   <div className="border-t border-camel pt-4">
                     <div className="flex justify-between text-lg font-medium text-leather-black">
                       <span>Total</span>
-                      <span>{formatCurrencyMXN(total)}</span>
+                      <span>{formatMXN(total)}</span>
                     </div>
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatCurrencyMXN } from '@/lib/currency';
+import { formatMXN } from '@/lib/price';
 import { getSandaliaImage } from '@/lib/image-manifest-sandalias';
 import { toVariantSlug } from '@/lib/slugify';
 import { getProductBySlug } from '@/lib/products-mock';
@@ -237,7 +237,7 @@ export function ProductPageClient({ product }: { product: ProductView }) {
                     console.log('Comprar ahora:', currentVariant, 'Talla:', selectedSize);
                   }}
                 >
-                  Comprar Ahora - {formatCurrencyMXN(price)}
+                  Comprar Ahora - {formatMXN(price)}
                 </Button>
                 <Button
                   size="lg"

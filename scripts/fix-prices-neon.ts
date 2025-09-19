@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { assertPesos } from "../src/lib/price";
+import { normalizePesos } from "../src/lib/price";
 
 // Usar DATABASE_URL de Neon directamente
 const prisma = new PrismaClient();
@@ -34,7 +34,7 @@ async function main() {
   for (const [slug, precioPesos] of Object.entries(PRECIOS_BOTA_ALTA)) {
     try {
       // Validar precio antes de aplicar
-      const validatedPrice = assertPesos(precioPesos);
+      const validatedPrice = normalizePesos(precioPesos);
       
       console.log(`📦 ${slug}:`);
       

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { formatCurrencyMXN } from '@/lib/currency';
+import { formatMXN } from '@/lib/price';
 import { prisma } from '@/lib/prisma';
 import { resolveProductImagePrimary } from '@/lib/productImage';
 import { shapeProductForPdp } from '@/lib/shapeProduct';
@@ -152,7 +152,7 @@ export default async function BotaAltaMujerPage() {
                     {/* Precio */}
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-leather-black">
-                        {formatCurrencyMXN(defaultVariant?.priceMXN ?? 0)}
+                        {formatMXN(defaultVariant?.priceMXN ?? 0)}
                       </span>
                       <span className="text-sm text-espresso">
                         Desde

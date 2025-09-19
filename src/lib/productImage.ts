@@ -26,6 +26,11 @@ export function resolveProductImagePrimary(product: { slug?: string; categories?
                  : `/img/products/vaquera/${slug}.png`;
   }
 
+  // Exotica: intentamos por variante
+  if (isCat(product, "exotica")) {
+    return `/img/products/exotica/${slug}-${vslug}.png`;
+  }
+
   // Otros: usa primera imagen DB o placeholder genérico
   return product?.imageSrc ?? product?.images?.[0]?.url ?? "/img/placeholder.png";
 }
@@ -37,7 +42,11 @@ export function fallbackByModel(product: { slug?: string; categories?: string[] 
   if (isCat(product, "botas")) {
     return `/img/products/vaquera/${product?.slug}.png`;
   }
+  if (isCat(product, "exotica")) {
+    return `/img/products/exotica/${product?.slug}.png`;
+  }
   return `/img/placeholder-bota.png`;
 }
 
 export const placeholderBota = "/img/placeholder-bota.png";
+export const placeholderExotica = "/img/products/exotica/placeholder-exotica.png";

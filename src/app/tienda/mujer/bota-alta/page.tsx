@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatCurrencyMXN } from '@/lib/currency';
 import { prisma } from '@/lib/prisma';
 import { resolveProductImagePrimary } from '@/lib/productImage';
+import { shapeProductForPdp } from '@/lib/shapeProduct';
 
 export const metadata: Metadata = {
   title: 'Bota Alta · Damas | Leather Path',
@@ -94,8 +95,9 @@ export default async function BotaAltaMujerPage() {
         {/* Grid de productos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {productos.map((producto) => {
-            const defaultVariant = producto.variants?.[0] ?? null;
-            const imgSrc = resolveProductImagePrimary(producto, defaultVariant?.option2 ?? undefined);
+            const shapedProduct = shapeProductForPdp(producto);
+            const defaultVariant = shapedProduct.variants?.[0] ?? null;
+            const imgSrc = resolveProductImagePrimary(shapedProduct, defaultVariant?.option2 ?? undefined);
             
             return (
             <div key={producto.id} className="group">
@@ -105,7 +107,7 @@ export default async function BotaAltaMujerPage() {
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={imgSrc}
-                      alt={`${producto.title} - ${defaultVariant?.option2 ?? ""}`}
+                      alt={`${shapedProduct.title} - ${defaultVariant?.option2 ?? ""}`}
                       fill
                       className="object-contain bg-white group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -119,19 +121,19 @@ export default async function BotaAltaMujerPage() {
                   {/* Contenido */}
                   <div className="p-6">
                     <h3 className="text-xl font-heading text-leather-black mb-2 group-hover:text-saddle transition-colors">
-                      {producto.title}
+                      {shapedProduct.title}
                     </h3>
                     <p className="text-espresso text-sm mb-4 line-clamp-2">
-                      {producto.description || 'Bota alta para dama con diseño elegante y materiales premium'}
+                      {shapedProduct.description || 'Bota alta para dama con diseño elegante y materiales premium'}
                     </p>
                     
                     {/* Variantes disponibles */}
                     <div className="mb-4">
                       <p className="text-xs text-camel mb-2">
-                        {producto.variants.length} variante{producto.variants.length !== 1 ? 's' : ''} disponible{producto.variants.length !== 1 ? 's' : ''}
+                        {shapedProduct.variants.length} variante{shapedProduct.variants.length !== 1 ? 's' : ''} disponible{shapedProduct.variants.length !== 1 ? 's' : ''}
                       </p>
                       <div className="flex flex-wrap gap-1">
-                        {producto.variants.slice(0, 2).map((variant, index) => (
+                        {shapedProduct.variants.slice(0, 2).map((variant, index) => (
                           <span
                             key={index}
                             className="text-xs bg-camel/20 text-espresso px-2 py-1 rounded"
@@ -139,9 +141,9 @@ export default async function BotaAltaMujerPage() {
                             {variant.option2}
                           </span>
                         ))}
-                        {producto.variants.length > 2 && (
+                        {shapedProduct.variants.length > 2 && (
                           <span className="text-xs text-camel">
-                            +{producto.variants.length - 2} más
+                            +{shapedProduct.variants.length - 2} más
                           </span>
                         )}
                       </div>
@@ -150,7 +152,7 @@ export default async function BotaAltaMujerPage() {
                     {/* Precio */}
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-leather-black">
-                        {formatCurrencyMXN((producto.variants[0]?.priceMXN || 0) * 100)}
+                        {formatCurrencyMXN(defaultVariant?.priceMXN ?? 0)}
                       </span>
                       <span className="text-sm text-espresso">
                         Desde

@@ -49,7 +49,7 @@ async function main() {
 
     // Verificar variantes
     for (const v of (p.variants ?? [])) {
-      const vs = variantSlug(v.option2);
+      const vs = variantSlug(v.option2 ?? undefined);
       const filename = `${p.slug}-${vs}.png`;
       const fullPath = path.join(base, filename);
       
